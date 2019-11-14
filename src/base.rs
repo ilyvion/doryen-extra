@@ -30,4 +30,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-pub mod base;
+#[macro_use]
+mod def_macro;
+
+define_two_property_arithmetic_struct!(Position, i32, x, y, ORIGIN, "({}, {})");
+define_two_property_arithmetic_struct!(Size, i32, width, height, ZERO, "{}x{}");
+
+#[derive(Copy, Clone, Default, PartialEq, Eq)]
+#[cfg_attr(feature = "debug", derive(Debug))]
+pub struct Rectangle {
+    pub position: Position,
+    pub size: Size,
+}
+
+impl Rectangle {
+    pub fn new(position: Position, size: Size) -> Self {
+        Self { position, size }
+    }
+
+    pub fn contains_position(&self, position: Position) -> bool {
+        position.x >= self.position.x
+            && position.x <= self.position.x + self.size.width
+            && position.y >= self.position.y
+            && position.y <= self.position.y + self.size.height
+    }
+}
+
+impl std::ops::Add<Size> for Position {
+    type Output = Rectangle;
+
+    fn add(self, rhs: Size) -> Self::Output {
+        Rectangle::new(self, rhs)
+    }
+}
