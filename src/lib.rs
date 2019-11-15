@@ -30,5 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-pub mod base;
+mod base;
+pub use base::*;
+
 pub mod bresenham;

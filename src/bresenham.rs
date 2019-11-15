@@ -31,6 +31,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+//! Line drawing using the Bresenham algorithm.
+
 use crate::base::Position;
 
 /// A struct used for computing a bresenham line.
@@ -123,7 +125,7 @@ impl Bresenham {
 impl Iterator for Bresenham {
     type Item = Position;
 
-    /// Does the same as calling `step()`, but lets you access the points by iterating
+    /// Does the same as calling `step()`, but lets you access the points by iterating.
     fn next(&mut self) -> Option<Self::Item> {
         self.step()
     }
