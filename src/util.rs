@@ -1,6 +1,7 @@
 /* BSD 3-Clause License
  *
  * Copyright © 2019, Alexander Krivács Schrøder <alexschrod@gmail.com>.
+ * Copyright © 2008-2019, Jice and the libtcod contributors.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,10 +31,21 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-mod base;
-pub use base::*;
+use std::ops::Rem;
 
-pub mod bresenham;
-pub mod color;
+pub trait FloorRem<Rhs = Self>: Rem<Rhs> {
+    /// Returns floor modulo.
+    #[must_use]
+    fn floor_modulo(self, rhs: Self) -> Self::Output;
+}
 
-mod util;
+impl FloorRem for f32 {
+    fn floor_modulo(self, rhs: Self) -> Self::Output {
+        let m = self % rhs;
+        if m < 0.0 {
+            m + rhs
+        } else {
+            m
+        }
+    }
+}
