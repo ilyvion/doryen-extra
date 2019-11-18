@@ -36,4 +36,5 @@ pub use base::*;
 pub mod bresenham;
 pub mod color;
 
+pub mod random;
 mod util;

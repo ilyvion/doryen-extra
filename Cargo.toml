@@ -7,7 +7,11 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+rand = {version = "0.7", optional = true, default-features = false}
+rand_core = {version = "0.5", optional = true}
 
 [features]
 default = ["debug"]
 debug = []
+libcod-compat = []
+rng_support = ["rand_core", "rand"]
