@@ -440,7 +440,7 @@ impl Dice {
     ///
     /// # Example
     /// ```
-    /// # use rustcod::random::Dice;
+    /// # use doryen_extra::random::Dice;
     /// let dice = Dice::new("5*3d6+2");
     /// ```
     pub fn new<S: AsRef<str>>(s: S) -> Self {

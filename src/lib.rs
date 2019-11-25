@@ -30,8 +30,80 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+//! # Doryen-extra
+//!
+//! Doryen-extra aims to be a loose re-implementation of the popular rougelike library named libcod,
+//! which is also known as the Doryen Library. While the doryen-rs crate fulfills this to some
+//! extent, it is (at the present time) missing a lot of the features that were present in libtcod.    
+//!
+//! After finding myself frustrated with the various limitations and hassles that are involved when
+//! wrapping a C library in rust, which is what the `tcod` crate has done, I decided to just go
+//! all-in and re-code the entire library in Rust.
+//!
+//! While I could've just copied and pasted the code as it was, and called it a day, I also wanted
+//! to make it a proper Rust library, so it has been coded with retaining functionality in mind,
+//! but not with retaining form. By that, I mean that all the functionality from libtcod should be
+//! present, but how it's accessed or used may vary greatly from the original.
+//!
+//! Some functionality may also have changed from the original. In places where it was possible
+//! and/or desirable to also offer the original functionality, the feature `libcod-compat` may be
+//! enabled to use these instead of the improved/changed versions.
+
+// Coding conventions
+#![deny(non_upper_case_globals)]
+#![deny(non_camel_case_types)]
+#![deny(non_snake_case)]
+#![deny(unused_mut)]
+#![deny(bare_trait_objects)]
+#![deny(ellipsis_inclusive_range_patterns)]
+#![deny(unsafe_code)]
+#![warn(missing_docs)]
+// Clippy conventions
+#![deny(clippy::cast_lossless)]
+#![deny(clippy::default_trait_access)]
+#![deny(clippy::empty_enum)]
+#![deny(clippy::enum_glob_use)]
+#![deny(clippy::expl_impl_clone_on_copy)]
+#![deny(clippy::explicit_into_iter_loop)]
+#![deny(clippy::explicit_iter_loop)]
+#![deny(clippy::filter_map)]
+#![deny(clippy::filter_map_next)]
+#![deny(clippy::find_map)]
+#![deny(clippy::if_not_else)]
+#![deny(clippy::invalid_upcast_comparisons)]
+#![deny(clippy::items_after_statements)]
+#![deny(clippy::large_digit_groups)]
+#![deny(clippy::map_flatten)]
+#![deny(clippy::match_same_arms)]
+#![deny(clippy::mut_mut)]
+#![deny(clippy::needless_continue)]
+#![deny(clippy::needless_pass_by_value)]
+#![deny(clippy::option_map_unwrap_or)]
+#![deny(clippy::option_map_unwrap_or_else)]
+#![deny(clippy::redundant_closure_for_method_calls)]
+#![deny(clippy::result_map_unwrap_or_else)]
+#![deny(clippy::single_match_else)]
+#![deny(clippy::string_add_assign)]
+#![deny(clippy::type_repetition_in_bounds)]
+#![deny(clippy::unseparated_literal_suffix)]
+#![deny(clippy::unused_self)]
+//#![deny(clippy::use_self)] // Too many false positives, currently
+#![deny(clippy::used_underscore_binding)]
+#![warn(clippy::must_use_candidate)]
+#![warn(clippy::non_ascii_literal)]
+#![warn(clippy::pub_enum_variant_names)]
+#![warn(clippy::replace_consts)]
+#![warn(clippy::shadow_unrelated)]
+#![warn(clippy::similar_names)]
+#![warn(clippy::too_many_lines)]
+#![allow(clippy::new_without_default)]
+#![allow(clippy::cast_sign_loss)]
+
 mod base;
 pub use base::*;
+
+pub mod extenders;
+pub mod extensions;
 
 pub mod bresenham;
 pub mod color;
