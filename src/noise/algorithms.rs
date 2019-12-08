@@ -31,50 +31,67 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-use std::ops::Rem;
+pub(crate) mod perlin;
+pub(crate) mod simplex;
+pub(crate) mod wavelet;
 
-pub trait FloorRem<Rhs = Self>: Rem<Rhs> {
-    /// Returns floor modulo.
-    #[must_use]
-    fn floor_modulo(self, rhs: Self) -> Self::Output;
+use crate::noise::MAX_DIMENSIONS;
+use crate::random::{Algorithm as RandomAlgorithm, Random, Rng};
+use ilyvion_util::multi_dimensional::Window2D;
+
+pub trait Algorithm {
+    fn new<R: RandomAlgorithm>(dimensions: usize, initializer: AlgorithmInitializer<R>) -> Self;
+
+    fn generate(&self, f: &[f32]) -> f32;
 }
 
-impl FloorRem for f32 {
-    fn floor_modulo(self, rhs: Self) -> Self::Output {
-        let m = self % rhs;
-        if m < 0.0 {
-            m + rhs
-        } else {
-            m
+pub struct AlgorithmInitializer<R: RandomAlgorithm> {
+    random: Random<R>,
+}
+
+impl<R: RandomAlgorithm> AlgorithmInitializer<R> {
+    pub fn new(random: Random<R>) -> Self {
+        Self { random }
+    }
+
+    pub fn map(&mut self) -> [u8; 256] {
+        let mut map = [0; 256];
+        for i in 0_u8..=255 {
+            map[i as usize] = i;
+        }
+
+        for i in (0..255).rev() {
+            let j = self.random.get_i32(0, 255) as usize;
+            if i == j {
+                continue;
+            }
+            map.swap(i, j);
+        }
+
+        map
+    }
+
+    pub fn buffer(&mut self, dimensions: usize) -> [f32; MAX_DIMENSIONS * 256] {
+        let mut buffer = [0.0; MAX_DIMENSIONS * 256];
+        let mut buffer_window = Window2D::new_mut_unchecked(&mut buffer, 256, MAX_DIMENSIONS);
+        for i in 0_u8..=255 {
+            for j in 0..dimensions {
+                buffer_window[i as usize][j] = self.random.get_f32(-0.5, 0.5);
+            }
+            Self::normalize(dimensions, &mut buffer_window[i as usize]);
+        }
+
+        buffer
+    }
+
+    fn normalize(dimensions: usize, f: &mut [f32]) {
+        let mut magnitude = 0.0;
+        for &i in f.iter().take(dimensions) {
+            magnitude += i * i;
+        }
+        magnitude = 1.0 / magnitude.sqrt();
+        for i in f.iter_mut().take(dimensions) {
+            *i *= magnitude;
         }
     }
-}
-
-impl FloorRem for i32 {
-    fn floor_modulo(self, rhs: Self) -> Self::Output {
-        let m = self % rhs;
-        if m < 0 {
-            m + rhs
-        } else {
-            m
-        }
-    }
-}
-
-impl FloorRem for isize {
-    fn floor_modulo(self, rhs: Self) -> Self::Output {
-        let m = self % rhs;
-        if m < 0 {
-            m + rhs
-        } else {
-            m
-        }
-    }
-}
-
-macro_rules! lerp {
-    ($a:expr, $b:expr, $x:expr) => {{
-        let a = $a;
-        a + $x * ($b - a)
-    }};
 }

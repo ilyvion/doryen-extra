@@ -38,7 +38,8 @@
 
 mod algorithms;
 
-use crate::random::algorithms::{Algorithm, ComplementaryMultiplyWithCarry, MersenneTwister};
+pub(crate) use crate::random::algorithms::Algorithm;
+use crate::random::algorithms::{ComplementaryMultiplyWithCarry, MersenneTwister};
 use std::time::SystemTime;
 
 /// Trait providing methods for generating random numbers.

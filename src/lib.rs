@@ -99,6 +99,9 @@
 #![allow(clippy::new_without_default)]
 #![allow(clippy::cast_sign_loss)]
 
+#[macro_use]
+mod util;
+
 mod base;
 pub use base::*;
 
@@ -108,5 +111,5 @@ pub mod extensions;
 pub mod bresenham;
 pub mod color;
 
+pub mod noise;
 pub mod random;
-mod util;
