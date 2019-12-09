@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-//! # Extenders for doryen-rs types
+//! # Extenders for doryen-rs types.
 
 use crate::color::Color;
 use crate::{Position, Rectangle, USize};

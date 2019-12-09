@@ -52,6 +52,7 @@ pub struct Perlin {
 }
 
 impl Perlin {
+    #[allow(clippy::too_many_arguments)]
     fn lattice(
         &self,
         ix: i32,
@@ -75,6 +76,282 @@ impl Perlin {
             .take(self.dimensions)
             .map(|(b, f)| b * f)
             .sum()
+    }
+
+    fn perlin_1d(
+        &self,
+        n: [i32; MAX_DIMENSIONS],
+        r: [f32; MAX_DIMENSIONS],
+        w: [f32; MAX_DIMENSIONS],
+    ) -> f32 {
+        lerp!(
+            self.lattice(n[0], r[0], 0, 0.0, 0, 0.0, 0, 0.0),
+            self.lattice(n[0] + 1, r[0] - 1.0, 0, 0.0, 0, 0.0, 0, 0.0),
+            w[0]
+        )
+    }
+
+    fn perlin_2d(
+        &self,
+        n: [i32; MAX_DIMENSIONS],
+        r: [f32; MAX_DIMENSIONS],
+        w: [f32; MAX_DIMENSIONS],
+    ) -> f32 {
+        lerp!(
+            lerp!(
+                self.lattice(n[0], r[0], n[1], r[1], 0, 0.0, 0, 0.0),
+                self.lattice(n[0] + 1, r[0] - 1.0, n[1], r[1], 0, 0.0, 0, 0.0),
+                w[0]
+            ),
+            lerp!(
+                self.lattice(n[0], r[0], n[1] + 1, r[1] - 1.0, 0, 0.0, 0, 0.0),
+                self.lattice(n[0] + 1, r[0] - 1.0, n[1] + 1, r[1] - 1.0, 0, 0.0, 0, 0.0),
+                w[0]
+            ),
+            w[1]
+        )
+    }
+
+    fn perlin_3d(
+        &self,
+        n: [i32; MAX_DIMENSIONS],
+        r: [f32; MAX_DIMENSIONS],
+        w: [f32; MAX_DIMENSIONS],
+    ) -> f32 {
+        lerp!(
+            lerp!(
+                lerp!(
+                    self.lattice(n[0], r[0], n[1], r[1], n[2], r[2], 0, 0.0),
+                    self.lattice(n[0] + 1, r[0] - 1.0, n[1], r[1], n[2], r[2], 0, 0.0),
+                    w[0]
+                ),
+                lerp!(
+                    self.lattice(n[0], r[0], n[1] + 1, r[1] - 1.0, n[2], r[2], 0, 0.0),
+                    self.lattice(
+                        n[0] + 1,
+                        r[0] - 1.0,
+                        n[1] + 1,
+                        r[1] - 1.0,
+                        n[2],
+                        r[2],
+                        0,
+                        0.0
+                    ),
+                    w[0]
+                ),
+                w[1]
+            ),
+            lerp!(
+                lerp!(
+                    self.lattice(n[0], r[0], n[1], r[1], n[2] + 1, r[2] - 1.0, 0, 0.0),
+                    self.lattice(
+                        n[0] + 1,
+                        r[0] - 1.0,
+                        n[1],
+                        r[1],
+                        n[2] + 1,
+                        r[2] - 1.0,
+                        0,
+                        0.0
+                    ),
+                    w[0]
+                ),
+                lerp!(
+                    self.lattice(
+                        n[0],
+                        r[0],
+                        n[1] + 1,
+                        r[1] - 1.0,
+                        n[2] + 1,
+                        r[2] - 1.0,
+                        0,
+                        0.0
+                    ),
+                    self.lattice(
+                        n[0] + 1,
+                        r[0] - 1.0,
+                        n[1] + 1,
+                        r[1] - 1.0,
+                        n[2] + 1,
+                        r[2] - 1.0,
+                        0,
+                        0.0
+                    ),
+                    w[0]
+                ),
+                w[1]
+            ),
+            w[2]
+        )
+    }
+
+    #[allow(clippy::too_many_lines)]
+    fn perlin_4d(
+        &self,
+        n: [i32; MAX_DIMENSIONS],
+        r: [f32; MAX_DIMENSIONS],
+        w: [f32; MAX_DIMENSIONS],
+    ) -> f32 {
+        lerp!(
+            lerp!(
+                lerp!(
+                    lerp!(
+                        self.lattice(n[0], r[0], n[1], r[1], n[2], r[2], n[3], r[3]),
+                        self.lattice(n[0] + 1, r[0] - 1.0, n[1], r[1], n[2], r[2], n[3], r[3]),
+                        w[0]
+                    ),
+                    lerp!(
+                        self.lattice(n[0], r[0], n[1] + 1, r[1] - 1.0, n[2], r[2], n[3], r[3]),
+                        self.lattice(
+                            n[0] + 1,
+                            r[0] - 1.0,
+                            n[1] + 1,
+                            r[1] - 1.0,
+                            n[2],
+                            r[2],
+                            n[3],
+                            r[3]
+                        ),
+                        w[0]
+                    ),
+                    w[1]
+                ),
+                lerp!(
+                    lerp!(
+                        self.lattice(n[0], r[0], n[1], r[1], n[2] + 1, r[2] - 1.0, n[3], r[3]),
+                        self.lattice(
+                            n[0] + 1,
+                            r[0] - 1.0,
+                            n[1],
+                            r[1],
+                            n[2] + 1,
+                            r[2] - 1.0,
+                            n[3],
+                            r[3]
+                        ),
+                        w[0]
+                    ),
+                    lerp!(
+                        self.lattice(
+                            n[0],
+                            r[0],
+                            n[1] + 1,
+                            r[1] - 1.0,
+                            n[2] + 1,
+                            r[2] - 1.0,
+                            0,
+                            0.0
+                        ),
+                        self.lattice(
+                            n[0] + 1,
+                            r[0] - 1.0,
+                            n[1] + 1,
+                            r[1] - 1.0,
+                            n[2] + 1,
+                            r[2] - 1.0,
+                            n[3],
+                            r[3]
+                        ),
+                        w[0]
+                    ),
+                    w[1]
+                ),
+                w[2]
+            ),
+            lerp!(
+                lerp!(
+                    lerp!(
+                        self.lattice(n[0], r[0], n[1], r[1], n[2], r[2], n[3] + 1, r[3] - 1.0),
+                        self.lattice(
+                            n[0] + 1,
+                            r[0] - 1.0,
+                            n[1],
+                            r[1],
+                            n[2],
+                            r[2],
+                            n[3] + 1,
+                            r[3] - 1.0
+                        ),
+                        w[0]
+                    ),
+                    lerp!(
+                        self.lattice(
+                            n[0],
+                            r[0],
+                            n[1] + 1,
+                            r[1] - 1.0,
+                            n[2],
+                            r[2],
+                            n[3] + 1,
+                            r[3] - 1.0
+                        ),
+                        self.lattice(
+                            n[0] + 1,
+                            r[0] - 1.0,
+                            n[1] + 1,
+                            r[1] - 1.0,
+                            n[2],
+                            r[2],
+                            n[3] + 1,
+                            r[3] - 1.0
+                        ),
+                        w[0]
+                    ),
+                    w[1]
+                ),
+                lerp!(
+                    lerp!(
+                        self.lattice(
+                            n[0],
+                            r[0],
+                            n[1],
+                            r[1],
+                            n[2] + 1,
+                            r[2] - 1.0,
+                            n[3] + 1,
+                            r[3] - 1.0
+                        ),
+                        self.lattice(
+                            n[0] + 1,
+                            r[0] - 1.0,
+                            n[1],
+                            r[1],
+                            n[2] + 1,
+                            r[2] - 1.0,
+                            n[3] + 1,
+                            r[3] - 1.0
+                        ),
+                        w[0]
+                    ),
+                    lerp!(
+                        self.lattice(
+                            n[0],
+                            r[0],
+                            n[1] + 1,
+                            r[1] - 1.0,
+                            n[2] + 1,
+                            r[2] - 1.0,
+                            0,
+                            0.0
+                        ),
+                        self.lattice(
+                            n[0] + 1,
+                            r[0] - 1.0,
+                            n[1] + 1,
+                            r[1] - 1.0,
+                            n[2] + 1,
+                            r[2] - 1.0,
+                            n[3] + 1,
+                            r[3] - 1.0
+                        ),
+                        w[0]
+                    ),
+                    w[1]
+                ),
+                w[2]
+            ),
+            w[3]
+        )
     }
 
     fn cubic_f32(a: f32) -> f32 {
@@ -105,249 +382,10 @@ impl Algorithm for Perlin {
         }
 
         let value = match self.dimensions {
-            1 => lerp!(
-                self.lattice(n[0], r[0], 0, 0.0, 0, 0.0, 0, 0.0),
-                self.lattice(n[0] + 1, r[0] - 1.0, 0, 0.0, 0, 0.0, 0, 0.0),
-                w[0]
-            ),
-            2 => lerp!(
-                lerp!(
-                    self.lattice(n[0], r[0], n[1], r[1], 0, 0.0, 0, 0.0),
-                    self.lattice(n[0] + 1, r[0] - 1.0, n[1], r[1], 0, 0.0, 0, 0.0),
-                    w[0]
-                ),
-                lerp!(
-                    self.lattice(n[0], r[0], n[1] + 1, r[1] - 1.0, 0, 0.0, 0, 0.0),
-                    self.lattice(n[0] + 1, r[0] - 1.0, n[1] + 1, r[1] - 1.0, 0, 0.0, 0, 0.0),
-                    w[0]
-                ),
-                w[1]
-            ),
-            3 => lerp!(
-                lerp!(
-                    lerp!(
-                        self.lattice(n[0], r[0], n[1], r[1], n[2], r[2], 0, 0.0),
-                        self.lattice(n[0] + 1, r[0] - 1.0, n[1], r[1], n[2], r[2], 0, 0.0),
-                        w[0]
-                    ),
-                    lerp!(
-                        self.lattice(n[0], r[0], n[1] + 1, r[1] - 1.0, n[2], r[2], 0, 0.0),
-                        self.lattice(
-                            n[0] + 1,
-                            r[0] - 1.0,
-                            n[1] + 1,
-                            r[1] - 1.0,
-                            n[2],
-                            r[2],
-                            0,
-                            0.0
-                        ),
-                        w[0]
-                    ),
-                    w[1]
-                ),
-                lerp!(
-                    lerp!(
-                        self.lattice(n[0], r[0], n[1], r[1], n[2] + 1, r[2] - 1.0, 0, 0.0),
-                        self.lattice(
-                            n[0] + 1,
-                            r[0] - 1.0,
-                            n[1],
-                            r[1],
-                            n[2] + 1,
-                            r[2] - 1.0,
-                            0,
-                            0.0
-                        ),
-                        w[0]
-                    ),
-                    lerp!(
-                        self.lattice(
-                            n[0],
-                            r[0],
-                            n[1] + 1,
-                            r[1] - 1.0,
-                            n[2] + 1,
-                            r[2] - 1.0,
-                            0,
-                            0.0
-                        ),
-                        self.lattice(
-                            n[0] + 1,
-                            r[0] - 1.0,
-                            n[1] + 1,
-                            r[1] - 1.0,
-                            n[2] + 1,
-                            r[2] - 1.0,
-                            0,
-                            0.0
-                        ),
-                        w[0]
-                    ),
-                    w[1]
-                ),
-                w[2]
-            ),
-            4 => lerp!(
-                lerp!(
-                    lerp!(
-                        lerp!(
-                            self.lattice(n[0], r[0], n[1], r[1], n[2], r[2], n[3], r[3]),
-                            self.lattice(n[0] + 1, r[0] - 1.0, n[1], r[1], n[2], r[2], n[3], r[3]),
-                            w[0]
-                        ),
-                        lerp!(
-                            self.lattice(n[0], r[0], n[1] + 1, r[1] - 1.0, n[2], r[2], n[3], r[3]),
-                            self.lattice(
-                                n[0] + 1,
-                                r[0] - 1.0,
-                                n[1] + 1,
-                                r[1] - 1.0,
-                                n[2],
-                                r[2],
-                                n[3],
-                                r[3]
-                            ),
-                            w[0]
-                        ),
-                        w[1]
-                    ),
-                    lerp!(
-                        lerp!(
-                            self.lattice(n[0], r[0], n[1], r[1], n[2] + 1, r[2] - 1.0, n[3], r[3]),
-                            self.lattice(
-                                n[0] + 1,
-                                r[0] - 1.0,
-                                n[1],
-                                r[1],
-                                n[2] + 1,
-                                r[2] - 1.0,
-                                n[3],
-                                r[3]
-                            ),
-                            w[0]
-                        ),
-                        lerp!(
-                            self.lattice(
-                                n[0],
-                                r[0],
-                                n[1] + 1,
-                                r[1] - 1.0,
-                                n[2] + 1,
-                                r[2] - 1.0,
-                                0,
-                                0.0
-                            ),
-                            self.lattice(
-                                n[0] + 1,
-                                r[0] - 1.0,
-                                n[1] + 1,
-                                r[1] - 1.0,
-                                n[2] + 1,
-                                r[2] - 1.0,
-                                n[3],
-                                r[3]
-                            ),
-                            w[0]
-                        ),
-                        w[1]
-                    ),
-                    w[2]
-                ),
-                lerp!(
-                    lerp!(
-                        lerp!(
-                            self.lattice(n[0], r[0], n[1], r[1], n[2], r[2], n[3] + 1, r[3] - 1.0),
-                            self.lattice(
-                                n[0] + 1,
-                                r[0] - 1.0,
-                                n[1],
-                                r[1],
-                                n[2],
-                                r[2],
-                                n[3] + 1,
-                                r[3] - 1.0
-                            ),
-                            w[0]
-                        ),
-                        lerp!(
-                            self.lattice(
-                                n[0],
-                                r[0],
-                                n[1] + 1,
-                                r[1] - 1.0,
-                                n[2],
-                                r[2],
-                                n[3] + 1,
-                                r[3] - 1.0
-                            ),
-                            self.lattice(
-                                n[0] + 1,
-                                r[0] - 1.0,
-                                n[1] + 1,
-                                r[1] - 1.0,
-                                n[2],
-                                r[2],
-                                n[3] + 1,
-                                r[3] - 1.0
-                            ),
-                            w[0]
-                        ),
-                        w[1]
-                    ),
-                    lerp!(
-                        lerp!(
-                            self.lattice(
-                                n[0],
-                                r[0],
-                                n[1],
-                                r[1],
-                                n[2] + 1,
-                                r[2] - 1.0,
-                                n[3] + 1,
-                                r[3] - 1.0
-                            ),
-                            self.lattice(
-                                n[0] + 1,
-                                r[0] - 1.0,
-                                n[1],
-                                r[1],
-                                n[2] + 1,
-                                r[2] - 1.0,
-                                n[3] + 1,
-                                r[3] - 1.0
-                            ),
-                            w[0]
-                        ),
-                        lerp!(
-                            self.lattice(
-                                n[0],
-                                r[0],
-                                n[1] + 1,
-                                r[1] - 1.0,
-                                n[2] + 1,
-                                r[2] - 1.0,
-                                0,
-                                0.0
-                            ),
-                            self.lattice(
-                                n[0] + 1,
-                                r[0] - 1.0,
-                                n[1] + 1,
-                                r[1] - 1.0,
-                                n[2] + 1,
-                                r[2] - 1.0,
-                                n[3] + 1,
-                                r[3] - 1.0
-                            ),
-                            w[0]
-                        ),
-                        w[1]
-                    ),
-                    w[2]
-                ),
-                w[3]
-            ),
+            1 => self.perlin_1d(n, r, w),
+            2 => self.perlin_2d(n, r, w),
+            3 => self.perlin_3d(n, r, w),
+            4 => self.perlin_4d(n, r, w),
             _ => unreachable!(),
         };
 

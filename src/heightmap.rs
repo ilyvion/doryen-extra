@@ -31,7 +31,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-//! # Height map generation
+//! # Height map generation.
 //!
 //! This module provides a way to create a 2D grid of float values using various algorithms.
 

@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-//! # Extension traits for doryen-rs types
+//! # Extension traits for doryen-rs types.
 
 use crate::FPosition;
 use doryen_rs::InputApi;

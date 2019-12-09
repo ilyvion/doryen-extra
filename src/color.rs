@@ -183,6 +183,7 @@ impl Color {
     /// * `hue` - The color's hue in degrees.
     /// * `saturation` - The color's saturation, from 0 to 1.
     /// * `value` - The color's value, from 0 to 1.
+    #[allow(clippy::many_single_char_names)]
     pub fn set_hsv(&mut self, hue: f32, saturation: f32, value: f32) {
         let saturation = saturation.max(0.0).min(1.0);
         let value = value.max(0.0).min(1.0);

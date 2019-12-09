@@ -77,7 +77,7 @@ impl FSize {
     }
 }
 
-/// Represents a rectangle, using a position and size
+/// Represents a rectangle, using a position and size.
 #[derive(Copy, Clone, Default, PartialEq, Eq)]
 #[cfg_attr(feature = "debug", derive(Debug))]
 #[cfg_attr(
@@ -122,7 +122,7 @@ impl Rectangle {
     }
 }
 
-/// Represents a floating-point rectangle, using a position and size
+/// Represents a floating-point rectangle, using a position and size.
 #[derive(Copy, Clone, Default, PartialEq)]
 #[cfg_attr(feature = "debug", derive(Debug))]
 #[cfg_attr(

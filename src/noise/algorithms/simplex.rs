@@ -159,6 +159,7 @@ impl Simplex {
         0.25 * (n0 + n1)
     }
 
+    #[allow(clippy::many_single_char_names)]
     fn simplex_2d(&self, f0: f32, f1: f32) -> f32 {
         const F2: f64 = 0.366_025_403;
         const G2: f64 = 0.211_324_865;
@@ -213,6 +214,7 @@ impl Simplex {
     }
 
     #[allow(clippy::too_many_lines)]
+    #[allow(clippy::many_single_char_names)]
     fn simplex_3d(&self, f0: f32, f1: f32, f2: f32) -> f32 {
         const F3: f64 = 0.333_333_333;
         const G3: f64 = 0.166_666_667;
@@ -331,6 +333,7 @@ impl Simplex {
     }
 
     #[allow(clippy::too_many_lines)]
+    #[allow(clippy::many_single_char_names)]
     fn simplex_4d(&self, f0: f32, f1: f32, f2: f32, f3: f32) -> f32 {
         const F4: f64 = 0.309_016_994;
         const G4: f64 = 0.138_196_601;
@@ -529,12 +532,14 @@ impl Simplex {
         grad * x
     }
 
+    #[allow(clippy::many_single_char_names)]
     fn simplex_gradient_2d(mut h: i32, x: f32, y: f32) -> f32 {
         h &= 0x7;
         let (u, v) = if h < 4 { (x, 2.0 * y) } else { (y, 2.0 * x) };
         (if h & 1 == 1 { -u } else { u }) + (if h & 2 == 2 { -v } else { v })
     }
 
+    #[allow(clippy::many_single_char_names)]
     fn simplex_gradient_3d(mut h: i32, x: f32, y: f32, z: f32) -> f32 {
         h &= 0xF;
         let u = if h < 8 { x } else { y };
@@ -548,6 +553,7 @@ impl Simplex {
         (if h & 1 == 1 { -u } else { u } + if h & 2 == 2 { -v } else { v })
     }
 
+    #[allow(clippy::many_single_char_names)]
     fn simplex_gradient_4d(mut h: i32, x: f32, y: f32, z: f32, t: f32) -> f32 {
         h &= 0x1F;
         let u = if h < 24 { x } else { y };

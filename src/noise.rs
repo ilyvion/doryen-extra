@@ -31,7 +31,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-//! # Noise generation
+//! # Noise generation.
 //!
 //! This module provides several ways to generate Perlin noise and other derived noises.
 //! It can handle noise functions from 1 to 4 dimensions.

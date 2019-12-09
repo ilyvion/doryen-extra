@@ -68,6 +68,7 @@ impl Algorithm for Wavelet {
         }
     }
 
+    #[allow(clippy::many_single_char_names)]
     fn generate(&self, f: &[f32]) -> f32 {
         if self.dimensions > 3 {
             panic!("Wavelet noise only supports up to 3 dimensions");
@@ -217,7 +218,7 @@ impl WaveletTileData {
 
         for i in 0..WAVELET_TILE_SIZE as isize {
             to[i as usize * stride] = 0.0;
-            for k in i / 2..i / 2 + 1 {
+            for k in i / 2..=i / 2 {
                 to[i as usize * stride] += P_COEFFICIENTS[(2 + i - 2 * k) as usize]
                     * from[k.floor_modulo(WAVELET_TILE_SIZE as isize / 2) as usize * stride];
             }
