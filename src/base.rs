@@ -48,25 +48,31 @@ impl FPosition {
     pub fn truncate(self) -> Position {
         Position::new(self.x.trunc() as i32, self.y.trunc() as i32)
     }
+
+    /// Returns a non-floating point position where the decimal parts of the width and height
+    /// have been truncated.
+    pub fn truncate_u(self) -> UPosition {
+        UPosition::new(self.x.trunc() as u32, self.y.trunc() as u32)
+    }
 }
 
 impl Size {
     /// Returns the area represented by this size
-    pub fn area(&self) -> i32 {
+    pub fn area(self) -> i32 {
         self.width * self.height
     }
 }
 
 impl USize {
     /// Returns the area represented by this size
-    pub fn area(&self) -> u32 {
+    pub fn area(self) -> u32 {
         self.width * self.height
     }
 }
 
 impl FSize {
     /// Returns the area represented by this size
-    pub fn area(&self) -> f32 {
+    pub fn area(self) -> f32 {
         self.width * self.height
     }
 }

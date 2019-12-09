@@ -111,5 +111,6 @@ pub mod extensions;
 pub mod bresenham;
 pub mod color;
 
+pub mod heightmap;
 pub mod noise;
 pub mod random;

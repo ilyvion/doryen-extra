@@ -70,7 +70,7 @@ const DELTA: f32 = 1.0e-6;
 #[cfg_attr(feature = "debug", derive(Derivative))]
 #[cfg_attr(feature = "debug", derivative(Debug))]
 pub struct Noise<A: Algorithm> {
-    dimensions: usize,
+    pub(crate) dimensions: usize,
     algorithm: A,
     #[cfg_attr(feature = "debug", derivative(Debug = "ignore"))]
     exponent: [f32; MAX_OCTAVES],
