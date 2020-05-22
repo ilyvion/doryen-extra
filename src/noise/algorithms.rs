@@ -45,6 +45,7 @@ pub trait Algorithm {
     fn generate(&self, f: &[f32]) -> f32;
 }
 
+#[derive(Debug)]
 pub struct AlgorithmInitializer<R: RandomAlgorithm> {
     random: Random<R>,
 }

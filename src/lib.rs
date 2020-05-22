@@ -50,15 +50,33 @@
 //! enabled to use these instead of the improved/changed versions.
 
 // Coding conventions
-#![deny(non_upper_case_globals)]
+//
+// Deny (don't do this)
+#![deny(anonymous_parameters)]
+#![deny(bare_trait_objects)]
+#![deny(elided_lifetimes_in_paths)]
+#![deny(ellipsis_inclusive_range_patterns)]
 #![deny(non_camel_case_types)]
 #![deny(non_snake_case)]
-#![deny(unused_mut)]
-#![deny(bare_trait_objects)]
-#![deny(ellipsis_inclusive_range_patterns)]
+#![deny(non_upper_case_globals)]
+#![deny(trivial_numeric_casts)]
+#![deny(unreachable_pub)]
 #![deny(unsafe_code)]
+#![deny(unused_import_braces)]
+#![deny(unused_mut)]
+#![deny(unused_qualifications)]
+//
+// Warn (try not to do this)
+#![warn(missing_copy_implementations)]
+#![warn(missing_debug_implementations)]
 #![warn(missing_docs)]
+#![warn(rust_2018_idioms)]
+#![warn(variant_size_differences)]
+//#![warn(unused_results)]
+//
 // Clippy conventions
+//
+// Deny (don't do this)
 #![deny(clippy::cast_lossless)]
 #![deny(clippy::default_trait_access)]
 #![deny(clippy::empty_enum)]
@@ -87,17 +105,17 @@
 #![deny(clippy::type_repetition_in_bounds)]
 #![deny(clippy::unseparated_literal_suffix)]
 #![deny(clippy::unused_self)]
-//#![deny(clippy::use_self)] // Too many false positives, currently
+#![deny(clippy::use_self)] // Sometimes gives false positives; feel free to disable.
 #![deny(clippy::used_underscore_binding)]
-#![warn(clippy::must_use_candidate)]
-#![warn(clippy::non_ascii_literal)]
+//
+// Warn (try not to do this)
+//#![warn(clippy::must_use_candidate)]
+#![deny(clippy::new_without_default)]
 #![warn(clippy::pub_enum_variant_names)]
 #![warn(clippy::replace_consts)]
 #![warn(clippy::shadow_unrelated)]
 #![warn(clippy::similar_names)]
 #![warn(clippy::too_many_lines)]
-#![allow(clippy::new_without_default)]
-#![allow(clippy::cast_sign_loss)]
 
 #[macro_use]
 mod util;

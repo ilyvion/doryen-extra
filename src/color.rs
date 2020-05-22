@@ -83,8 +83,7 @@ use std::ops::{Add, Mul, Sub};
 pub use Color as Colour;
 
 /// A struct representing a 24-bit RGB color with alpha
-#[derive(Copy, Clone, Default, PartialEq, Eq)]
-#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Debug)]
 pub struct Color {
     /// The red component of the color
     pub r: u8,
@@ -1012,8 +1011,7 @@ impl From<doryen_rs::Color> for Color {
 
 /// Color names
 #[allow(missing_docs)]
-#[derive(Copy, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Name {
     Red,
     Flame,
@@ -1040,8 +1038,7 @@ pub enum Name {
 
 /// Color levels
 #[allow(missing_docs)]
-#[derive(Copy, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Level {
     Desaturated,
     Lightest,

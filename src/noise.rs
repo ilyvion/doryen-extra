@@ -53,7 +53,6 @@ use crate::noise::algorithms::wavelet::Wavelet;
 pub(crate) use crate::noise::algorithms::Algorithm;
 use crate::noise::algorithms::AlgorithmInitializer;
 use crate::random::{Algorithm as RandomAlgorithm, Random};
-#[cfg(feature = "debug")]
 use derivative::Derivative;
 
 /// The maximum number of octaves supported.
@@ -67,12 +66,12 @@ pub const DEFAULT_LACUNARITY: f32 = 2.0;
 const DELTA: f32 = 1.0e-6;
 
 /// A struct representing a noise generator algorithm and its parameters.
-#[cfg_attr(feature = "debug", derive(Derivative))]
-#[cfg_attr(feature = "debug", derivative(Debug))]
+#[derive(Derivative)]
+#[derivative(Debug)]
 pub struct Noise<A: Algorithm> {
     pub(crate) dimensions: usize,
     algorithm: A,
-    #[cfg_attr(feature = "debug", derivative(Debug = "ignore"))]
+    #[derivative(Debug = "ignore")]
     exponent: [f32; MAX_OCTAVES],
     lacunarity: f32,
 }

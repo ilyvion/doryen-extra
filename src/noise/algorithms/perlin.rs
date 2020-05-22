@@ -34,20 +34,18 @@
 use crate::noise::algorithms::AlgorithmInitializer;
 use crate::noise::{Algorithm, MAX_DIMENSIONS};
 use crate::random::Algorithm as RandomAlgorithm;
-#[cfg(feature = "debug")]
 use derivative::Derivative;
 use ilyvion_util::multi_dimensional::Window2D;
 
-#[derive(Clone, Copy)]
-#[cfg_attr(feature = "debug", derive(Derivative))]
-#[cfg_attr(feature = "debug", derivative(Debug))]
+#[derive(Clone, Copy, Derivative)]
+#[derivative(Debug)]
 pub struct Perlin {
     dimensions: usize,
     /** Randomized map of indexes into buffer */
-    #[cfg_attr(feature = "debug", derivative(Debug = "ignore"))]
+    #[derivative(Debug = "ignore")]
     pub map: [u8; 256],
     /** Random 256 x ndim buffer */
-    #[cfg_attr(feature = "debug", derivative(Debug = "ignore"))]
+    #[derivative(Debug = "ignore")]
     pub buffer: [f32; MAX_DIMENSIONS * 256],
 }
 
@@ -355,7 +353,7 @@ impl Perlin {
     }
 
     fn cubic_f32(a: f32) -> f32 {
-        (a * a * (3.0 - 2.0 * a))
+        a * a * (3.0 - 2.0 * a)
     }
 }
 

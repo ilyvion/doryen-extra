@@ -35,15 +35,14 @@ use crate::noise::algorithms::AlgorithmInitializer;
 use crate::noise::Algorithm;
 use crate::random::Algorithm as RandomAlgorithm;
 use crate::util::FloorRem;
-#[cfg(feature = "debug")]
+
 use derivative::Derivative;
 
-#[derive(Clone, Copy)]
-#[cfg_attr(feature = "debug", derive(Derivative))]
-#[cfg_attr(feature = "debug", derivative(Debug))]
+#[derive(Clone, Copy, Derivative)]
+#[derivative(Debug)]
 pub struct Simplex {
     dimensions: usize,
-    #[cfg_attr(feature = "debug", derivative(Debug = "ignore"))]
+    #[derivative(Debug = "ignore")]
     map: [u8; 256],
 }
 
@@ -540,6 +539,7 @@ impl Simplex {
     }
 
     #[allow(clippy::many_single_char_names)]
+    #[allow(unused_parens)] // Bug in stable/nightly at the time of writing.
     fn simplex_gradient_3d(mut h: i32, x: f32, y: f32, z: f32) -> f32 {
         h &= 0xF;
         let u = if h < 8 { x } else { y };
@@ -550,15 +550,18 @@ impl Simplex {
         } else {
             z
         };
+
         (if h & 1 == 1 { -u } else { u } + if h & 2 == 2 { -v } else { v })
     }
 
     #[allow(clippy::many_single_char_names)]
+    #[allow(unused_parens)] // Bug in stable/nightly at the time of writing.
     fn simplex_gradient_4d(mut h: i32, x: f32, y: f32, z: f32, t: f32) -> f32 {
         h &= 0x1F;
         let u = if h < 24 { x } else { y };
         let v = if h < 16 { y } else { z };
         let w = if h < 8 { z } else { t };
+
         (if h & 1 == 1 { -u } else { u }
             + if h & 2 == 2 { -v } else { v }
             + if h & 4 == 4 { -w } else { w })

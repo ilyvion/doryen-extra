@@ -43,7 +43,7 @@ use impl_ops::*;
 use std::ops::{self, AddAssign, MulAssign};
 
 /// A struct representing a height map.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct HeightMap {
     width: usize,
     height: usize,
@@ -826,7 +826,7 @@ impl MulAssign<f32> for HeightMap {
 }
 
 /// Represents a result of minimum and maximum values in a height map.
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct MinMax {
     /// The minimum value.
     pub min: f32,
@@ -841,7 +841,7 @@ impl From<(f32, f32)> for MinMax {
 }
 
 /// Represents a neighbor cell in the kernel transformation method.
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct NeighborCell {
     /// Which map cell this transform takes its value from, relative to the current cell. That is to
     /// say, if the transform is currently working on cell (5, 2) and this field is (-1, 1), it will
@@ -854,7 +854,7 @@ pub struct NeighborCell {
 }
 
 /// Represents the coordinates used in the `*_fbm` methods.
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct FbmCoordinateParameters {
     /// See the `*_fbm` methods for details on how this parameter is used.
     pub mul_x: f32,

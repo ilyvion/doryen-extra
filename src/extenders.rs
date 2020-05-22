@@ -35,7 +35,7 @@
 use crate::color::Color;
 use crate::{Position, Rectangle, USize};
 use doryen_rs::{Console, TextAlign};
-use ilyvion_util::ownership::Ob;
+use ilyvion_util::ownership::Borrowned;
 use std::borrow::{Borrow, BorrowMut};
 use std::ops::{Deref, DerefMut};
 
@@ -44,16 +44,17 @@ use std::ops::{Deref, DerefMut};
 /// Replaces most instances of x/y and w/h with `Position` and `USize` respectively, and makes use
 /// of `doryen-extra`'s `Color` type rather than `doryen-rs`'. Since the `ConsoleExtender` derefs
 /// to `Console`, it lets you both use the replaced/extended methods and the underlying methods
-/// that were not replaced with ease.  
+/// that were not replaced with ease.
+#[allow(missing_debug_implementations)] // Console doesn't implement Debug
 pub struct ConsoleExtender<'b> {
-    console: Ob<'b, Console>,
+    console: Borrowned<'b, Console>,
 }
 
 impl<'b> ConsoleExtender<'b> {
     /// Wraps the mutably borrowed console.
     pub fn extend(console: &'b mut Console) -> Self {
         Self {
-            console: Ob::Borrowed(console),
+            console: Borrowned::Borrowed(console),
         }
     }
 
@@ -61,14 +62,14 @@ impl<'b> ConsoleExtender<'b> {
     /// Size is in cells (characters), not pixels.
     pub fn new(size: USize) -> Self {
         Self {
-            console: Ob::Owned(Console::new(size.width, size.height)),
+            console: Borrowned::Owned(Console::new(size.width, size.height)),
         }
     }
 
     /// Wraps the owned console.
     pub fn wrap(console: Console) -> Self {
         Self {
-            console: Ob::Owned(console),
+            console: Borrowned::Owned(console),
         }
     }
 }

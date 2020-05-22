@@ -64,8 +64,7 @@ pub trait Rng {
 }
 
 /// pseudorandom number generator toolkit
-#[derive(Clone)]
-#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone, Debug)]
 pub struct Random<A: Algorithm> {
     /* algorithm identifier */
     algo: A,
@@ -227,9 +226,9 @@ impl<A: Algorithm> Random<A> {
         let num = self.get_gaussian_double(f64::from(mean), f64::from(std_deviation));
         let integer = num.round() as i32;
         if num >= f64::from(mean) {
-            (integer - 3 * std_deviation)
+            integer - 3 * std_deviation
         } else {
-            (integer + 3 * std_deviation)
+            integer + 3 * std_deviation
         }
     }
 
@@ -389,8 +388,7 @@ impl Random<ComplementaryMultiplyWithCarry> {
 }
 
 /// The distribution to use when generating random numbers
-#[derive(Clone, Copy)]
-#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Clone, Copy, Debug)]
 pub enum Distribution {
     /// Linear distribution; all numbers are equally likely.
     Linear,
@@ -424,6 +422,7 @@ fn hash(data: &[u8]) -> u32 {
 */
 
 /// Represents a set of dice and rules for calculating their value when rolled
+#[derive(Debug, Copy, Clone)]
 pub struct Dice {
     nb_rolls: i32,
     nb_faces: i32,

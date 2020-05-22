@@ -78,8 +78,7 @@ impl FSize {
 }
 
 /// Represents a rectangle, using a position and size.
-#[derive(Copy, Clone, Default, PartialEq, Eq)]
-#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Debug)]
 #[cfg_attr(
     feature = "serialization",
     derive(serde_derive::Serialize, serde_derive::Deserialize)
@@ -123,8 +122,7 @@ impl Rectangle {
 }
 
 /// Represents a floating-point rectangle, using a position and size.
-#[derive(Copy, Clone, Default, PartialEq)]
-#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Copy, Clone, Default, PartialEq, Debug)]
 #[cfg_attr(
     feature = "serialization",
     derive(serde_derive::Serialize, serde_derive::Deserialize)

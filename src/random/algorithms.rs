@@ -136,7 +136,6 @@ impl MersenneTwister {
     }
 }
 
-#[cfg(feature = "debug")]
 impl std::fmt::Debug for MersenneTwister {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         write!(f, "MersenneTwister {{ cur_mt: {} }}", self.cur_mt)
@@ -221,7 +220,6 @@ impl ComplementaryMultiplyWithCarry {
     }
 }
 
-#[cfg(feature = "debug")]
 impl std::fmt::Debug for ComplementaryMultiplyWithCarry {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         write!(

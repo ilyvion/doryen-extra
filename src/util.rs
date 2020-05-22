@@ -33,7 +33,7 @@
 
 use std::ops::Rem;
 
-pub trait FloorRem<Rhs = Self>: Rem<Rhs> {
+pub(crate) trait FloorRem<Rhs = Self>: Rem<Rhs> {
     /// Returns floor modulo.
     #[must_use]
     fn floor_modulo(self, rhs: Self) -> Self::Output;

@@ -35,7 +35,6 @@ use crate::noise::algorithms::AlgorithmInitializer;
 use crate::noise::Algorithm;
 use crate::random::{Algorithm as RandomAlgorithm, Random, Rng};
 use crate::util::FloorRem;
-#[cfg(feature = "debug")]
 use derivative::Derivative;
 use std::mem::MaybeUninit;
 
@@ -49,12 +48,11 @@ const WAVELET_SCALE: f32 = 2.0;
 
 /* wavelet noise, adapted from Robert L. Cook and Tony Derose 'Wavelet noise' paper */
 
-#[derive(Clone)]
-#[cfg_attr(feature = "debug", derive(Derivative))]
-#[cfg_attr(feature = "debug", derivative(Debug))]
+#[derive(Clone, Derivative)]
+#[derivative(Debug)]
 pub struct Wavelet {
     dimensions: usize,
-    #[cfg_attr(feature = "debug", derivative(Debug = "ignore"))]
+    #[derivative(Debug = "ignore")]
     tile_data: Box<[f32; WAVELET_TILE_SIZE_CUBED]>,
 }
 
@@ -123,10 +121,10 @@ impl Algorithm for Wavelet {
     }
 }
 
-pub struct WaveletTileData;
+pub(crate) struct WaveletTileData;
 
 impl WaveletTileData {
-    pub fn initialize<R: RandomAlgorithm>(
+    pub(crate) fn initialize<R: RandomAlgorithm>(
         random: &mut Random<R>,
     ) -> Box<[f32; WAVELET_TILE_SIZE_CUBED]> {
         let mut noise = Self::generate_noise(random);
@@ -206,8 +204,7 @@ impl WaveletTileData {
         for i in 0..WAVELET_TILE_SIZE as isize / 2 {
             to[i as usize * stride] = 0.0;
             for k in 2 * i - WAVELET_ARAD as isize..2 * i + WAVELET_ARAD as isize {
-                to[i as usize * stride] += A_COEFFICIENTS
-                    [(16 + k as isize - 2 * i as isize) as usize]
+                to[i as usize * stride] += A_COEFFICIENTS[(16 + k - 2 * i) as usize]
                     * from[k.floor_modulo(WAVELET_TILE_SIZE as isize) as usize * stride];
             }
         }

@@ -36,7 +36,7 @@
 use crate::base::Position;
 
 /// A struct used for computing a bresenham line.
-#[cfg_attr(feature = "debug", derive(Debug))]
+#[derive(Debug, Copy, Clone)]
 pub struct Bresenham {
     step_x: i32,
     step_y: i32,
