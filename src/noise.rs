@@ -31,6 +31,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+// These are needed due to a strange interaction between clippy and the output
+// produced by the derivative crate on the Noise struct.
+#![allow(clippy::match_single_binding)]
+#![allow(clippy::use_self)]
+
 //! # Noise generation.
 //!
 //! This module provides several ways to generate Perlin noise and other derived noises.
@@ -66,6 +71,7 @@ pub const DEFAULT_LACUNARITY: f32 = 2.0;
 const DELTA: f32 = 1.0e-6;
 
 /// A struct representing a noise generator algorithm and its parameters.
+
 #[derive(Derivative)]
 #[derivative(Debug)]
 pub struct Noise<A: Algorithm> {

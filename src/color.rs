@@ -145,7 +145,7 @@ impl Color {
     /// let light_blue = Color::new_hsv(240.0, 0.75, 1.0);
     /// ```
     pub fn new_hsv(hue: f32, saturation: f32, value: f32) -> Self {
-        let mut color = Color::new(0, 0, 0);
+        let mut color = Self::new(0, 0, 0);
         color.set_hsv(hue, saturation, value);
 
         color
@@ -170,7 +170,7 @@ impl Color {
     /// ```
     pub fn new_hsv_with_opacity(hue: f32, saturation: f32, value: f32, opacity: f32) -> Self {
         let a = (opacity.max(0.0).min(1.0) * 255.0).round() as u8;
-        let mut color = Color::new_with_alpha(0, 0, 0, a);
+        let mut color = Self::new_with_alpha(0, 0, 0, a);
         color.set_hsv(hue, saturation, value);
 
         color
@@ -349,7 +349,7 @@ impl Color {
     /// // Generates every grayscale color between black and white
     /// let grayscale = Color::generate_gradient_rgb(&[Color::BLACK,Color::WHITE], &[254]);
     /// ```
-    pub fn generate_gradient_rgb(key_colors: &[Color], gradient_spans: &[usize]) -> Vec<Color> {
+    pub fn generate_gradient_rgb(key_colors: &[Self], gradient_spans: &[usize]) -> Vec<Self> {
         if key_colors.is_empty() {
             return vec![];
         }
@@ -391,7 +391,7 @@ impl Color {
     /// // Generates every grayscale color between black and white
     /// let grayscale = Color::generate_gradient_hsv(&[Color::BLACK,Color::WHITE], &[254]);
     /// ```
-    pub fn generate_gradient_hsv(key_colors: &[Color], gradient_spans: &[usize]) -> Vec<Color> {
+    pub fn generate_gradient_hsv(key_colors: &[Self], gradient_spans: &[usize]) -> Vec<Self> {
         if key_colors.is_empty() {
             return vec![];
         }
@@ -428,7 +428,7 @@ impl Color {
     /// # Panics
     ///
     /// If `coefficient` is outside the range \[0, 1\].
-    pub fn lerp_rgb(self, other: Color, coefficient: f32) -> Color {
+    pub fn lerp_rgb(self, other: Self, coefficient: f32) -> Self {
         assert!(
             coefficient >= 0.0 && coefficient <= 1.0,
             "coefficient is outside the acceptable range [0, 1]"
@@ -451,7 +451,7 @@ impl Color {
     /// # Panics
     ///
     /// If `coefficient` is outside the range \[0, 1\].
-    pub fn lerp_hsv(self, other: Color, coefficient: f32) -> Color {
+    pub fn lerp_hsv(self, other: Self, coefficient: f32) -> Self {
         assert!(
             coefficient >= 0.0 && coefficient <= 1.0,
             "coefficient is outside the acceptable range [0, 1]"
@@ -709,228 +709,228 @@ impl Color {
 #[allow(missing_docs)]
 impl Color {
     /* color values */
-    pub const BLACK: Color = Color::new(0, 0, 0);
-    pub const DARKEST_GRAY: Color = Color::new(31, 31, 31);
-    pub const DARKER_GRAY: Color = Color::new(63, 63, 63);
-    pub const DARK_GRAY: Color = Color::new(95, 95, 95);
-    pub const GRAY: Color = Color::new(127, 127, 127);
-    pub const LIGHT_GRAY: Color = Color::new(159, 159, 159);
-    pub const LIGHTER_GRAY: Color = Color::new(191, 191, 191);
-    pub const LIGHTEST_GRAY: Color = Color::new(223, 223, 223);
-    pub const DARKEST_GREY: Color = Color::DARKEST_GRAY;
-    pub const DARKER_GREY: Color = Color::DARKER_GRAY;
-    pub const DARK_GREY: Color = Color::DARK_GRAY;
-    pub const GREY: Color = Color::GRAY;
-    pub const LIGHT_GREY: Color = Color::LIGHT_GRAY;
-    pub const LIGHTER_GREY: Color = Color::LIGHTER_GRAY;
-    pub const LIGHTEST_GREY: Color = Color::LIGHTEST_GRAY;
-    pub const WHITE: Color = Color::new(255, 255, 255);
+    pub const BLACK: Self = Self::new(0, 0, 0);
+    pub const DARKEST_GRAY: Self = Self::new(31, 31, 31);
+    pub const DARKER_GRAY: Self = Self::new(63, 63, 63);
+    pub const DARK_GRAY: Self = Self::new(95, 95, 95);
+    pub const GRAY: Self = Self::new(127, 127, 127);
+    pub const LIGHT_GRAY: Self = Self::new(159, 159, 159);
+    pub const LIGHTER_GRAY: Self = Self::new(191, 191, 191);
+    pub const LIGHTEST_GRAY: Self = Self::new(223, 223, 223);
+    pub const DARKEST_GREY: Self = Self::DARKEST_GRAY;
+    pub const DARKER_GREY: Self = Self::DARKER_GRAY;
+    pub const DARK_GREY: Self = Self::DARK_GRAY;
+    pub const GREY: Self = Self::GRAY;
+    pub const LIGHT_GREY: Self = Self::LIGHT_GRAY;
+    pub const LIGHTER_GREY: Self = Self::LIGHTER_GRAY;
+    pub const LIGHTEST_GREY: Self = Self::LIGHTEST_GRAY;
+    pub const WHITE: Self = Self::new(255, 255, 255);
 
-    pub const DARKEST_SEPIA: Color = Color::new(31, 24, 15);
-    pub const DARKER_SEPIA: Color = Color::new(63, 50, 31);
-    pub const DARK_SEPIA: Color = Color::new(94, 75, 47);
-    pub const SEPIA: Color = Color::new(127, 101, 63);
-    pub const LIGHT_SEPIA: Color = Color::new(158, 134, 100);
-    pub const LIGHTER_SEPIA: Color = Color::new(191, 171, 143);
-    pub const LIGHTEST_SEPIA: Color = Color::new(222, 211, 195);
+    pub const DARKEST_SEPIA: Self = Self::new(31, 24, 15);
+    pub const DARKER_SEPIA: Self = Self::new(63, 50, 31);
+    pub const DARK_SEPIA: Self = Self::new(94, 75, 47);
+    pub const SEPIA: Self = Self::new(127, 101, 63);
+    pub const LIGHT_SEPIA: Self = Self::new(158, 134, 100);
+    pub const LIGHTER_SEPIA: Self = Self::new(191, 171, 143);
+    pub const LIGHTEST_SEPIA: Self = Self::new(222, 211, 195);
 
     /* desaturated */
-    pub const DESATURATED_RED: Color = Color::new(127, 63, 63);
-    pub const DESATURATED_FLAME: Color = Color::new(127, 79, 63);
-    pub const DESATURATED_ORANGE: Color = Color::new(127, 95, 63);
-    pub const DESATURATED_AMBER: Color = Color::new(127, 111, 63);
-    pub const DESATURATED_YELLOW: Color = Color::new(127, 127, 63);
-    pub const DESATURATED_LIME: Color = Color::new(111, 127, 63);
-    pub const DESATURATED_CHARTREUSE: Color = Color::new(95, 127, 63);
-    pub const DESATURATED_GREEN: Color = Color::new(63, 127, 63);
-    pub const DESATURATED_SEA: Color = Color::new(63, 127, 95);
-    pub const DESATURATED_TURQUOISE: Color = Color::new(63, 127, 111);
-    pub const DESATURATED_CYAN: Color = Color::new(63, 127, 127);
-    pub const DESATURATED_SKY: Color = Color::new(63, 111, 127);
-    pub const DESATURATED_AZURE: Color = Color::new(63, 95, 127);
-    pub const DESATURATED_BLUE: Color = Color::new(63, 63, 127);
-    pub const DESATURATED_HAN: Color = Color::new(79, 63, 127);
-    pub const DESATURATED_VIOLET: Color = Color::new(95, 63, 127);
-    pub const DESATURATED_PURPLE: Color = Color::new(111, 63, 127);
-    pub const DESATURATED_FUCHSIA: Color = Color::new(127, 63, 127);
-    pub const DESATURATED_MAGENTA: Color = Color::new(127, 63, 111);
-    pub const DESATURATED_PINK: Color = Color::new(127, 63, 95);
-    pub const DESATURATED_CRIMSON: Color = Color::new(127, 63, 79);
+    pub const DESATURATED_RED: Self = Self::new(127, 63, 63);
+    pub const DESATURATED_FLAME: Self = Self::new(127, 79, 63);
+    pub const DESATURATED_ORANGE: Self = Self::new(127, 95, 63);
+    pub const DESATURATED_AMBER: Self = Self::new(127, 111, 63);
+    pub const DESATURATED_YELLOW: Self = Self::new(127, 127, 63);
+    pub const DESATURATED_LIME: Self = Self::new(111, 127, 63);
+    pub const DESATURATED_CHARTREUSE: Self = Self::new(95, 127, 63);
+    pub const DESATURATED_GREEN: Self = Self::new(63, 127, 63);
+    pub const DESATURATED_SEA: Self = Self::new(63, 127, 95);
+    pub const DESATURATED_TURQUOISE: Self = Self::new(63, 127, 111);
+    pub const DESATURATED_CYAN: Self = Self::new(63, 127, 127);
+    pub const DESATURATED_SKY: Self = Self::new(63, 111, 127);
+    pub const DESATURATED_AZURE: Self = Self::new(63, 95, 127);
+    pub const DESATURATED_BLUE: Self = Self::new(63, 63, 127);
+    pub const DESATURATED_HAN: Self = Self::new(79, 63, 127);
+    pub const DESATURATED_VIOLET: Self = Self::new(95, 63, 127);
+    pub const DESATURATED_PURPLE: Self = Self::new(111, 63, 127);
+    pub const DESATURATED_FUCHSIA: Self = Self::new(127, 63, 127);
+    pub const DESATURATED_MAGENTA: Self = Self::new(127, 63, 111);
+    pub const DESATURATED_PINK: Self = Self::new(127, 63, 95);
+    pub const DESATURATED_CRIMSON: Self = Self::new(127, 63, 79);
 
     /* lightest */
-    pub const LIGHTEST_RED: Color = Color::new(255, 191, 191);
-    pub const LIGHTEST_FLAME: Color = Color::new(255, 207, 191);
-    pub const LIGHTEST_ORANGE: Color = Color::new(255, 223, 191);
-    pub const LIGHTEST_AMBER: Color = Color::new(255, 239, 191);
-    pub const LIGHTEST_YELLOW: Color = Color::new(255, 255, 191);
-    pub const LIGHTEST_LIME: Color = Color::new(239, 255, 191);
-    pub const LIGHTEST_CHARTREUSE: Color = Color::new(223, 255, 191);
-    pub const LIGHTEST_GREEN: Color = Color::new(191, 255, 191);
-    pub const LIGHTEST_SEA: Color = Color::new(191, 255, 223);
-    pub const LIGHTEST_TURQUOISE: Color = Color::new(191, 255, 239);
-    pub const LIGHTEST_CYAN: Color = Color::new(191, 255, 255);
-    pub const LIGHTEST_SKY: Color = Color::new(191, 239, 255);
-    pub const LIGHTEST_AZURE: Color = Color::new(191, 223, 255);
-    pub const LIGHTEST_BLUE: Color = Color::new(191, 191, 255);
-    pub const LIGHTEST_HAN: Color = Color::new(207, 191, 255);
-    pub const LIGHTEST_VIOLET: Color = Color::new(223, 191, 255);
-    pub const LIGHTEST_PURPLE: Color = Color::new(239, 191, 255);
-    pub const LIGHTEST_FUCHSIA: Color = Color::new(255, 191, 255);
-    pub const LIGHTEST_MAGENTA: Color = Color::new(255, 191, 239);
-    pub const LIGHTEST_PINK: Color = Color::new(255, 191, 223);
-    pub const LIGHTEST_CRIMSON: Color = Color::new(255, 191, 207);
+    pub const LIGHTEST_RED: Self = Self::new(255, 191, 191);
+    pub const LIGHTEST_FLAME: Self = Self::new(255, 207, 191);
+    pub const LIGHTEST_ORANGE: Self = Self::new(255, 223, 191);
+    pub const LIGHTEST_AMBER: Self = Self::new(255, 239, 191);
+    pub const LIGHTEST_YELLOW: Self = Self::new(255, 255, 191);
+    pub const LIGHTEST_LIME: Self = Self::new(239, 255, 191);
+    pub const LIGHTEST_CHARTREUSE: Self = Self::new(223, 255, 191);
+    pub const LIGHTEST_GREEN: Self = Self::new(191, 255, 191);
+    pub const LIGHTEST_SEA: Self = Self::new(191, 255, 223);
+    pub const LIGHTEST_TURQUOISE: Self = Self::new(191, 255, 239);
+    pub const LIGHTEST_CYAN: Self = Self::new(191, 255, 255);
+    pub const LIGHTEST_SKY: Self = Self::new(191, 239, 255);
+    pub const LIGHTEST_AZURE: Self = Self::new(191, 223, 255);
+    pub const LIGHTEST_BLUE: Self = Self::new(191, 191, 255);
+    pub const LIGHTEST_HAN: Self = Self::new(207, 191, 255);
+    pub const LIGHTEST_VIOLET: Self = Self::new(223, 191, 255);
+    pub const LIGHTEST_PURPLE: Self = Self::new(239, 191, 255);
+    pub const LIGHTEST_FUCHSIA: Self = Self::new(255, 191, 255);
+    pub const LIGHTEST_MAGENTA: Self = Self::new(255, 191, 239);
+    pub const LIGHTEST_PINK: Self = Self::new(255, 191, 223);
+    pub const LIGHTEST_CRIMSON: Self = Self::new(255, 191, 207);
 
     /* lighter */
-    pub const LIGHTER_RED: Color = Color::new(255, 127, 127);
-    pub const LIGHTER_FLAME: Color = Color::new(255, 159, 127);
-    pub const LIGHTER_ORANGE: Color = Color::new(255, 191, 127);
-    pub const LIGHTER_AMBER: Color = Color::new(255, 223, 127);
-    pub const LIGHTER_YELLOW: Color = Color::new(255, 255, 127);
-    pub const LIGHTER_LIME: Color = Color::new(223, 255, 127);
-    pub const LIGHTER_CHARTREUSE: Color = Color::new(191, 255, 127);
-    pub const LIGHTER_GREEN: Color = Color::new(127, 255, 127);
-    pub const LIGHTER_SEA: Color = Color::new(127, 255, 191);
-    pub const LIGHTER_TURQUOISE: Color = Color::new(127, 255, 223);
-    pub const LIGHTER_CYAN: Color = Color::new(127, 255, 255);
-    pub const LIGHTER_SKY: Color = Color::new(127, 223, 255);
-    pub const LIGHTER_AZURE: Color = Color::new(127, 191, 255);
-    pub const LIGHTER_BLUE: Color = Color::new(127, 127, 255);
-    pub const LIGHTER_HAN: Color = Color::new(159, 127, 255);
-    pub const LIGHTER_VIOLET: Color = Color::new(191, 127, 255);
-    pub const LIGHTER_PURPLE: Color = Color::new(223, 127, 255);
-    pub const LIGHTER_FUCHSIA: Color = Color::new(255, 127, 255);
-    pub const LIGHTER_MAGENTA: Color = Color::new(255, 127, 223);
-    pub const LIGHTER_PINK: Color = Color::new(255, 127, 191);
-    pub const LIGHTER_CRIMSON: Color = Color::new(255, 127, 159);
+    pub const LIGHTER_RED: Self = Self::new(255, 127, 127);
+    pub const LIGHTER_FLAME: Self = Self::new(255, 159, 127);
+    pub const LIGHTER_ORANGE: Self = Self::new(255, 191, 127);
+    pub const LIGHTER_AMBER: Self = Self::new(255, 223, 127);
+    pub const LIGHTER_YELLOW: Self = Self::new(255, 255, 127);
+    pub const LIGHTER_LIME: Self = Self::new(223, 255, 127);
+    pub const LIGHTER_CHARTREUSE: Self = Self::new(191, 255, 127);
+    pub const LIGHTER_GREEN: Self = Self::new(127, 255, 127);
+    pub const LIGHTER_SEA: Self = Self::new(127, 255, 191);
+    pub const LIGHTER_TURQUOISE: Self = Self::new(127, 255, 223);
+    pub const LIGHTER_CYAN: Self = Self::new(127, 255, 255);
+    pub const LIGHTER_SKY: Self = Self::new(127, 223, 255);
+    pub const LIGHTER_AZURE: Self = Self::new(127, 191, 255);
+    pub const LIGHTER_BLUE: Self = Self::new(127, 127, 255);
+    pub const LIGHTER_HAN: Self = Self::new(159, 127, 255);
+    pub const LIGHTER_VIOLET: Self = Self::new(191, 127, 255);
+    pub const LIGHTER_PURPLE: Self = Self::new(223, 127, 255);
+    pub const LIGHTER_FUCHSIA: Self = Self::new(255, 127, 255);
+    pub const LIGHTER_MAGENTA: Self = Self::new(255, 127, 223);
+    pub const LIGHTER_PINK: Self = Self::new(255, 127, 191);
+    pub const LIGHTER_CRIMSON: Self = Self::new(255, 127, 159);
 
     /* light */
-    pub const LIGHT_RED: Color = Color::new(255, 63, 63);
-    pub const LIGHT_FLAME: Color = Color::new(255, 111, 63);
-    pub const LIGHT_ORANGE: Color = Color::new(255, 159, 63);
-    pub const LIGHT_AMBER: Color = Color::new(255, 207, 63);
-    pub const LIGHT_YELLOW: Color = Color::new(255, 255, 63);
-    pub const LIGHT_LIME: Color = Color::new(207, 255, 63);
-    pub const LIGHT_CHARTREUSE: Color = Color::new(159, 255, 63);
-    pub const LIGHT_GREEN: Color = Color::new(63, 255, 63);
-    pub const LIGHT_SEA: Color = Color::new(63, 255, 159);
-    pub const LIGHT_TURQUOISE: Color = Color::new(63, 255, 207);
-    pub const LIGHT_CYAN: Color = Color::new(63, 255, 255);
-    pub const LIGHT_SKY: Color = Color::new(63, 207, 255);
-    pub const LIGHT_AZURE: Color = Color::new(63, 159, 255);
-    pub const LIGHT_BLUE: Color = Color::new(63, 63, 255);
-    pub const LIGHT_HAN: Color = Color::new(111, 63, 255);
-    pub const LIGHT_VIOLET: Color = Color::new(159, 63, 255);
-    pub const LIGHT_PURPLE: Color = Color::new(207, 63, 255);
-    pub const LIGHT_FUCHSIA: Color = Color::new(255, 63, 255);
-    pub const LIGHT_MAGENTA: Color = Color::new(255, 63, 207);
-    pub const LIGHT_PINK: Color = Color::new(255, 63, 159);
-    pub const LIGHT_CRIMSON: Color = Color::new(255, 63, 111);
+    pub const LIGHT_RED: Self = Self::new(255, 63, 63);
+    pub const LIGHT_FLAME: Self = Self::new(255, 111, 63);
+    pub const LIGHT_ORANGE: Self = Self::new(255, 159, 63);
+    pub const LIGHT_AMBER: Self = Self::new(255, 207, 63);
+    pub const LIGHT_YELLOW: Self = Self::new(255, 255, 63);
+    pub const LIGHT_LIME: Self = Self::new(207, 255, 63);
+    pub const LIGHT_CHARTREUSE: Self = Self::new(159, 255, 63);
+    pub const LIGHT_GREEN: Self = Self::new(63, 255, 63);
+    pub const LIGHT_SEA: Self = Self::new(63, 255, 159);
+    pub const LIGHT_TURQUOISE: Self = Self::new(63, 255, 207);
+    pub const LIGHT_CYAN: Self = Self::new(63, 255, 255);
+    pub const LIGHT_SKY: Self = Self::new(63, 207, 255);
+    pub const LIGHT_AZURE: Self = Self::new(63, 159, 255);
+    pub const LIGHT_BLUE: Self = Self::new(63, 63, 255);
+    pub const LIGHT_HAN: Self = Self::new(111, 63, 255);
+    pub const LIGHT_VIOLET: Self = Self::new(159, 63, 255);
+    pub const LIGHT_PURPLE: Self = Self::new(207, 63, 255);
+    pub const LIGHT_FUCHSIA: Self = Self::new(255, 63, 255);
+    pub const LIGHT_MAGENTA: Self = Self::new(255, 63, 207);
+    pub const LIGHT_PINK: Self = Self::new(255, 63, 159);
+    pub const LIGHT_CRIMSON: Self = Self::new(255, 63, 111);
 
     /* normal */
-    pub const RED: Color = Color::new(255, 0, 0);
-    pub const FLAME: Color = Color::new(255, 63, 0);
-    pub const ORANGE: Color = Color::new(255, 127, 0);
-    pub const AMBER: Color = Color::new(255, 191, 0);
-    pub const YELLOW: Color = Color::new(255, 255, 0);
-    pub const LIME: Color = Color::new(191, 255, 0);
-    pub const CHARTREUSE: Color = Color::new(127, 255, 0);
-    pub const GREEN: Color = Color::new(0, 255, 0);
-    pub const SEA: Color = Color::new(0, 255, 127);
-    pub const TURQUOISE: Color = Color::new(0, 255, 191);
-    pub const CYAN: Color = Color::new(0, 255, 255);
-    pub const SKY: Color = Color::new(0, 191, 255);
-    pub const AZURE: Color = Color::new(0, 127, 255);
-    pub const BLUE: Color = Color::new(0, 0, 255);
-    pub const HAN: Color = Color::new(63, 0, 255);
-    pub const VIOLET: Color = Color::new(127, 0, 255);
-    pub const PURPLE: Color = Color::new(191, 0, 255);
-    pub const FUCHSIA: Color = Color::new(255, 0, 255);
-    pub const MAGENTA: Color = Color::new(255, 0, 191);
-    pub const PINK: Color = Color::new(255, 0, 127);
-    pub const CRIMSON: Color = Color::new(255, 0, 63);
+    pub const RED: Self = Self::new(255, 0, 0);
+    pub const FLAME: Self = Self::new(255, 63, 0);
+    pub const ORANGE: Self = Self::new(255, 127, 0);
+    pub const AMBER: Self = Self::new(255, 191, 0);
+    pub const YELLOW: Self = Self::new(255, 255, 0);
+    pub const LIME: Self = Self::new(191, 255, 0);
+    pub const CHARTREUSE: Self = Self::new(127, 255, 0);
+    pub const GREEN: Self = Self::new(0, 255, 0);
+    pub const SEA: Self = Self::new(0, 255, 127);
+    pub const TURQUOISE: Self = Self::new(0, 255, 191);
+    pub const CYAN: Self = Self::new(0, 255, 255);
+    pub const SKY: Self = Self::new(0, 191, 255);
+    pub const AZURE: Self = Self::new(0, 127, 255);
+    pub const BLUE: Self = Self::new(0, 0, 255);
+    pub const HAN: Self = Self::new(63, 0, 255);
+    pub const VIOLET: Self = Self::new(127, 0, 255);
+    pub const PURPLE: Self = Self::new(191, 0, 255);
+    pub const FUCHSIA: Self = Self::new(255, 0, 255);
+    pub const MAGENTA: Self = Self::new(255, 0, 191);
+    pub const PINK: Self = Self::new(255, 0, 127);
+    pub const CRIMSON: Self = Self::new(255, 0, 63);
 
     /* dark */
-    pub const DARK_RED: Color = Color::new(191, 0, 0);
-    pub const DARK_FLAME: Color = Color::new(191, 47, 0);
-    pub const DARK_ORANGE: Color = Color::new(191, 95, 0);
-    pub const DARK_AMBER: Color = Color::new(191, 143, 0);
-    pub const DARK_YELLOW: Color = Color::new(191, 191, 0);
-    pub const DARK_LIME: Color = Color::new(143, 191, 0);
-    pub const DARK_CHARTREUSE: Color = Color::new(95, 191, 0);
-    pub const DARK_GREEN: Color = Color::new(0, 191, 0);
-    pub const DARK_SEA: Color = Color::new(0, 191, 95);
-    pub const DARK_TURQUOISE: Color = Color::new(0, 191, 143);
-    pub const DARK_CYAN: Color = Color::new(0, 191, 191);
-    pub const DARK_SKY: Color = Color::new(0, 143, 191);
-    pub const DARK_AZURE: Color = Color::new(0, 95, 191);
-    pub const DARK_BLUE: Color = Color::new(0, 0, 191);
-    pub const DARK_HAN: Color = Color::new(47, 0, 191);
-    pub const DARK_VIOLET: Color = Color::new(95, 0, 191);
-    pub const DARK_PURPLE: Color = Color::new(143, 0, 191);
-    pub const DARK_FUCHSIA: Color = Color::new(191, 0, 191);
-    pub const DARK_MAGENTA: Color = Color::new(191, 0, 143);
-    pub const DARK_PINK: Color = Color::new(191, 0, 95);
-    pub const DARK_CRIMSON: Color = Color::new(191, 0, 47);
+    pub const DARK_RED: Self = Self::new(191, 0, 0);
+    pub const DARK_FLAME: Self = Self::new(191, 47, 0);
+    pub const DARK_ORANGE: Self = Self::new(191, 95, 0);
+    pub const DARK_AMBER: Self = Self::new(191, 143, 0);
+    pub const DARK_YELLOW: Self = Self::new(191, 191, 0);
+    pub const DARK_LIME: Self = Self::new(143, 191, 0);
+    pub const DARK_CHARTREUSE: Self = Self::new(95, 191, 0);
+    pub const DARK_GREEN: Self = Self::new(0, 191, 0);
+    pub const DARK_SEA: Self = Self::new(0, 191, 95);
+    pub const DARK_TURQUOISE: Self = Self::new(0, 191, 143);
+    pub const DARK_CYAN: Self = Self::new(0, 191, 191);
+    pub const DARK_SKY: Self = Self::new(0, 143, 191);
+    pub const DARK_AZURE: Self = Self::new(0, 95, 191);
+    pub const DARK_BLUE: Self = Self::new(0, 0, 191);
+    pub const DARK_HAN: Self = Self::new(47, 0, 191);
+    pub const DARK_VIOLET: Self = Self::new(95, 0, 191);
+    pub const DARK_PURPLE: Self = Self::new(143, 0, 191);
+    pub const DARK_FUCHSIA: Self = Self::new(191, 0, 191);
+    pub const DARK_MAGENTA: Self = Self::new(191, 0, 143);
+    pub const DARK_PINK: Self = Self::new(191, 0, 95);
+    pub const DARK_CRIMSON: Self = Self::new(191, 0, 47);
 
     /* darker */
-    pub const DARKER_RED: Color = Color::new(127, 0, 0);
-    pub const DARKER_FLAME: Color = Color::new(127, 31, 0);
-    pub const DARKER_ORANGE: Color = Color::new(127, 63, 0);
-    pub const DARKER_AMBER: Color = Color::new(127, 95, 0);
-    pub const DARKER_YELLOW: Color = Color::new(127, 127, 0);
-    pub const DARKER_LIME: Color = Color::new(95, 127, 0);
-    pub const DARKER_CHARTREUSE: Color = Color::new(63, 127, 0);
-    pub const DARKER_GREEN: Color = Color::new(0, 127, 0);
-    pub const DARKER_SEA: Color = Color::new(0, 127, 63);
-    pub const DARKER_TURQUOISE: Color = Color::new(0, 127, 95);
-    pub const DARKER_CYAN: Color = Color::new(0, 127, 127);
-    pub const DARKER_SKY: Color = Color::new(0, 95, 127);
-    pub const DARKER_AZURE: Color = Color::new(0, 63, 127);
-    pub const DARKER_BLUE: Color = Color::new(0, 0, 127);
-    pub const DARKER_HAN: Color = Color::new(31, 0, 127);
-    pub const DARKER_VIOLET: Color = Color::new(63, 0, 127);
-    pub const DARKER_PURPLE: Color = Color::new(95, 0, 127);
-    pub const DARKER_FUCHSIA: Color = Color::new(127, 0, 127);
-    pub const DARKER_MAGENTA: Color = Color::new(127, 0, 95);
-    pub const DARKER_PINK: Color = Color::new(127, 0, 63);
-    pub const DARKER_CRIMSON: Color = Color::new(127, 0, 31);
+    pub const DARKER_RED: Self = Self::new(127, 0, 0);
+    pub const DARKER_FLAME: Self = Self::new(127, 31, 0);
+    pub const DARKER_ORANGE: Self = Self::new(127, 63, 0);
+    pub const DARKER_AMBER: Self = Self::new(127, 95, 0);
+    pub const DARKER_YELLOW: Self = Self::new(127, 127, 0);
+    pub const DARKER_LIME: Self = Self::new(95, 127, 0);
+    pub const DARKER_CHARTREUSE: Self = Self::new(63, 127, 0);
+    pub const DARKER_GREEN: Self = Self::new(0, 127, 0);
+    pub const DARKER_SEA: Self = Self::new(0, 127, 63);
+    pub const DARKER_TURQUOISE: Self = Self::new(0, 127, 95);
+    pub const DARKER_CYAN: Self = Self::new(0, 127, 127);
+    pub const DARKER_SKY: Self = Self::new(0, 95, 127);
+    pub const DARKER_AZURE: Self = Self::new(0, 63, 127);
+    pub const DARKER_BLUE: Self = Self::new(0, 0, 127);
+    pub const DARKER_HAN: Self = Self::new(31, 0, 127);
+    pub const DARKER_VIOLET: Self = Self::new(63, 0, 127);
+    pub const DARKER_PURPLE: Self = Self::new(95, 0, 127);
+    pub const DARKER_FUCHSIA: Self = Self::new(127, 0, 127);
+    pub const DARKER_MAGENTA: Self = Self::new(127, 0, 95);
+    pub const DARKER_PINK: Self = Self::new(127, 0, 63);
+    pub const DARKER_CRIMSON: Self = Self::new(127, 0, 31);
 
     /* darkest */
-    pub const DARKEST_RED: Color = Color::new(63, 0, 0);
-    pub const DARKEST_FLAME: Color = Color::new(63, 15, 0);
-    pub const DARKEST_ORANGE: Color = Color::new(63, 31, 0);
-    pub const DARKEST_AMBER: Color = Color::new(63, 47, 0);
-    pub const DARKEST_YELLOW: Color = Color::new(63, 63, 0);
-    pub const DARKEST_LIME: Color = Color::new(47, 63, 0);
-    pub const DARKEST_CHARTREUSE: Color = Color::new(31, 63, 0);
-    pub const DARKEST_GREEN: Color = Color::new(0, 63, 0);
-    pub const DARKEST_SEA: Color = Color::new(0, 63, 31);
-    pub const DARKEST_TURQUOISE: Color = Color::new(0, 63, 47);
-    pub const DARKEST_CYAN: Color = Color::new(0, 63, 63);
-    pub const DARKEST_SKY: Color = Color::new(0, 47, 63);
-    pub const DARKEST_AZURE: Color = Color::new(0, 31, 63);
-    pub const DARKEST_BLUE: Color = Color::new(0, 0, 63);
-    pub const DARKEST_HAN: Color = Color::new(15, 0, 63);
-    pub const DARKEST_VIOLET: Color = Color::new(31, 0, 63);
-    pub const DARKEST_PURPLE: Color = Color::new(47, 0, 63);
-    pub const DARKEST_FUCHSIA: Color = Color::new(63, 0, 63);
-    pub const DARKEST_MAGENTA: Color = Color::new(63, 0, 47);
-    pub const DARKEST_PINK: Color = Color::new(63, 0, 31);
-    pub const DARKEST_CRIMSON: Color = Color::new(63, 0, 15);
+    pub const DARKEST_RED: Self = Self::new(63, 0, 0);
+    pub const DARKEST_FLAME: Self = Self::new(63, 15, 0);
+    pub const DARKEST_ORANGE: Self = Self::new(63, 31, 0);
+    pub const DARKEST_AMBER: Self = Self::new(63, 47, 0);
+    pub const DARKEST_YELLOW: Self = Self::new(63, 63, 0);
+    pub const DARKEST_LIME: Self = Self::new(47, 63, 0);
+    pub const DARKEST_CHARTREUSE: Self = Self::new(31, 63, 0);
+    pub const DARKEST_GREEN: Self = Self::new(0, 63, 0);
+    pub const DARKEST_SEA: Self = Self::new(0, 63, 31);
+    pub const DARKEST_TURQUOISE: Self = Self::new(0, 63, 47);
+    pub const DARKEST_CYAN: Self = Self::new(0, 63, 63);
+    pub const DARKEST_SKY: Self = Self::new(0, 47, 63);
+    pub const DARKEST_AZURE: Self = Self::new(0, 31, 63);
+    pub const DARKEST_BLUE: Self = Self::new(0, 0, 63);
+    pub const DARKEST_HAN: Self = Self::new(15, 0, 63);
+    pub const DARKEST_VIOLET: Self = Self::new(31, 0, 63);
+    pub const DARKEST_PURPLE: Self = Self::new(47, 0, 63);
+    pub const DARKEST_FUCHSIA: Self = Self::new(63, 0, 63);
+    pub const DARKEST_MAGENTA: Self = Self::new(63, 0, 47);
+    pub const DARKEST_PINK: Self = Self::new(63, 0, 31);
+    pub const DARKEST_CRIMSON: Self = Self::new(63, 0, 15);
 
     /* metallic */
-    pub const BRASS: Color = Color::new(191, 151, 96);
-    pub const COPPER: Color = Color::new(197, 136, 124);
-    pub const GOLD: Color = Color::new(229, 191, 0);
-    pub const SILVER: Color = Color::new(203, 203, 203);
+    pub const BRASS: Self = Self::new(191, 151, 96);
+    pub const COPPER: Self = Self::new(197, 136, 124);
+    pub const GOLD: Self = Self::new(229, 191, 0);
+    pub const SILVER: Self = Self::new(203, 203, 203);
 
     /* miscellaneous */
-    pub const CELADON: Color = Color::new(172, 255, 175);
-    pub const PEACH: Color = Color::new(255, 159, 127);
+    pub const CELADON: Self = Self::new(172, 255, 175);
+    pub const PEACH: Self = Self::new(255, 159, 127);
 }
 
 impl Add for Color {
-    type Output = Color;
+    type Output = Self;
 
     /// Add two colors together and return the result.
     fn add(self, rhs: Self) -> Self::Output {
@@ -944,7 +944,7 @@ impl Add for Color {
 }
 
 impl Sub for Color {
-    type Output = Color;
+    type Output = Self;
 
     /// Subtract the right hand side from the left hand side and return the result.
     fn sub(self, rhs: Self) -> Self::Output {
@@ -958,7 +958,7 @@ impl Sub for Color {
 }
 
 impl Mul for Color {
-    type Output = Color;
+    type Output = Self;
 
     /// Multiply two colors together and return the result.
     fn mul(self, rhs: Self) -> Self::Output {
@@ -972,7 +972,7 @@ impl Mul for Color {
 }
 
 impl Mul<f32> for Color {
-    type Output = Color;
+    type Output = Self;
 
     /// Multiply a color with a scalar value and return the result.
     fn mul(self, rhs: f32) -> Self::Output {

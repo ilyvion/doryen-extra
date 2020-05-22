@@ -40,6 +40,7 @@ mod algorithms;
 
 pub(crate) use crate::random::algorithms::Algorithm;
 use crate::random::algorithms::{ComplementaryMultiplyWithCarry, MersenneTwister};
+use std::cmp::Ordering;
 use std::time::SystemTime;
 
 /// Trait providing methods for generating random numbers.
@@ -84,10 +85,10 @@ impl<A: Algorithm> Random<A> {
     }
 
     fn get_i(&mut self, mut min: i32, mut max: i32) -> i32 {
-        if max == min {
-            return min;
-        } else if max < min {
-            std::mem::swap(&mut min, &mut max);
+        match max.cmp(&min) {
+            Ordering::Less => std::mem::swap(&mut min, &mut max),
+            Ordering::Equal => return min,
+            Ordering::Greater => (),
         }
 
         let delta = max - min + 1; // + 1 because it's used for modulo

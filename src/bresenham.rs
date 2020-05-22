@@ -34,6 +34,7 @@
 //! Line drawing using the Bresenham algorithm.
 
 use crate::base::Position;
+use std::cmp::Ordering;
 
 /// A struct used for computing a bresenham line.
 #[derive(Debug, Copy, Clone)]
@@ -55,21 +56,17 @@ impl Bresenham {
     /// * `to` - The ending position.
     pub fn init(from: Position, to: Position) -> Self {
         let mut delta_x = to.x - from.x;
-        let step_x = if delta_x > 0 {
-            1
-        } else if delta_x < 0 {
-            -1
-        } else {
-            0
+        let step_x = match delta_x.cmp(&0) {
+            Ordering::Less => -1,
+            Ordering::Equal => 0,
+            Ordering::Greater => 1,
         };
 
         let mut delta_y = to.y - from.y;
-        let step_y = if delta_y > 0 {
-            1
-        } else if delta_y < 0 {
-            -1
-        } else {
-            0
+        let step_y = match delta_y.cmp(&0) {
+            Ordering::Less => -1,
+            Ordering::Equal => 0,
+            Ordering::Greater => 1,
         };
 
         let e = if step_x * delta_x > step_y * delta_y {

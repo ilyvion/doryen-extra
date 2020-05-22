@@ -310,12 +310,12 @@ impl HeightMap {
     }
 
     /// Linearly interpolate two height maps together.
-    pub fn lerp(&self, other: &HeightMap, coefficient: f32) -> HeightMap {
+    pub fn lerp(&self, other: &Self, coefficient: f32) -> Self {
         assert_eq!(self.width, other.width);
         assert_eq!(self.height, other.height);
         assert!(coefficient >= 0.0 && coefficient <= 1.0);
 
-        let mut result = HeightMap::new(self.width, self.height);
+        let mut result = Self::new(self.width, self.height);
         for (v, (&sv, &ov)) in result
             .values
             .iter_mut()
