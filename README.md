@@ -1,3 +1,28 @@
+[![Crates.io][crates-badge]][crates]
+[![Docs.rs][docs-badge]][docs]
+[![CI][ci-badge]][ci]
+[![MacOS][macos-badge]][macos]
+[![License][license-badge]][license]
+[![Code coverage][coverage-badge]][coverage]
+
+[crates-badge]: https://img.shields.io/crates/v/doryen-extra
+[crates]: https://crates.io/crates/doryen-extra
+
+[docs-badge]: https://docs.rs/doryen-extra/badge.svg
+[docs]: https://docs.rs/doryen-extra/
+
+[ci-badge]: https://github.com/alexschrod/doryen-extra/workflows/CI/badge.svg
+[ci]: https://github.com/alexschrod/doryen-extra/actions?query=workflow%3ACI
+
+[macos-badge]: https://github.com/alexschrod/doryen-extra/workflows/MacOS/badge.svg
+[macos]: https://github.com/alexschrod/doryen-extra/actions?query=workflow%3AMacOS
+
+[license-badge]: https://img.shields.io/crates/l/doryen-extra
+[license]: https://github.com/alexschrod/doryen-extra/blob/master/LICENSE.txt
+
+[coverage-badge]: https://img.shields.io/codecov/c/github/alexschrod/doryen-extra
+[coverage]: https://codecov.io/gh/alexschrod/doryen-extra
+
 # Doryen-extra
 
 Doryen-extra aims to be a loose re-implementation of the utility features from the popular roguelike
