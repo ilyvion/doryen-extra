@@ -84,6 +84,10 @@ pub use Color as Colour;
 
 /// A struct representing a 24-bit RGB color with alpha
 #[derive(Copy, Clone, Default, PartialEq, Eq, Debug)]
+#[cfg_attr(
+    feature = "serialization",
+    derive(serde_derive::Serialize, serde_derive::Deserialize)
+)]
 pub struct Color {
     /// The red component of the color
     pub r: u8,
@@ -997,12 +1001,14 @@ impl From<(u8, u8, u8)> for Color {
     }
 }
 
+#[cfg(feature = "doryen")]
 impl From<Color> for doryen_rs::Color {
     fn from(c: Color) -> Self {
         (c.r, c.g, c.b, c.a)
     }
 }
 
+#[cfg(feature = "doryen")]
 impl From<doryen_rs::Color> for Color {
     fn from((r, g, b, a): doryen_rs::Color) -> Self {
         Self::new_with_alpha(r, g, b, a)
@@ -1012,6 +1018,10 @@ impl From<doryen_rs::Color> for Color {
 /// Color names
 #[allow(missing_docs)]
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
+#[cfg_attr(
+    feature = "serialization",
+    derive(serde_derive::Serialize, serde_derive::Deserialize)
+)]
 pub enum Name {
     Red,
     Flame,
@@ -1039,6 +1049,10 @@ pub enum Name {
 /// Color levels
 #[allow(missing_docs)]
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
+#[cfg_attr(
+    feature = "serialization",
+    derive(serde_derive::Serialize, serde_derive::Deserialize)
+)]
 pub enum Level {
     Desaturated,
     Lightest,

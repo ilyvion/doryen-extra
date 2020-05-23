@@ -8,16 +8,16 @@ edition = "2018"
 
 [dependencies]
 ilyvion-util = "0.3.1"
-doryen-rs = "1.2"
+doryen-rs = {version = "1.2", optional = true}
 derivative = "1.0"
 impl_ops = "0.1"
-rand = {version = "0.7", optional = true, default-features = false}
 rand_core = {version = "0.5", optional = true}
 serde = {version = "1", optional = true}
 serde_derive = {version = "1", optional = true}
 
 [features]
-default = []
-libcod-compat = []
-rng_support = ["rand_core", "rand"]
+default = ["doryen"]
+doryen = ["doryen-rs"]
+libtcod-compat = []
+rng_support = ["rand_core"]
 serialization = ["serde", "serde_derive"]

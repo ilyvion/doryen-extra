@@ -148,7 +148,7 @@ impl Algorithm for MersenneTwister {
     }
 
     fn get_float(&mut self) -> f32 {
-        if cfg!(feature = "libcod-compat") {
+        if cfg!(feature = "libtcod-compat") {
             Self::mt_rand(&mut self.mt, &mut self.cur_mt) as f32 * RAND_DIV
         } else {
             // Here we're using the fact that a 32-bit float has a 23-bit mantissa (< 0x1000000),
@@ -161,7 +161,7 @@ impl Algorithm for MersenneTwister {
 
     #[allow(clippy::unnecessary_cast)]
     fn get_double(&mut self) -> f64 {
-        if cfg!(feature = "libcod-compat") {
+        if cfg!(feature = "libtcod-compat") {
             f64::from(self.get_float())
         } else {
             // Since we're using 32-bit integers, we can't quite create the 52-bit randomness that
@@ -237,7 +237,7 @@ impl Algorithm for ComplementaryMultiplyWithCarry {
 
     fn get_float(&mut self) -> f32 {
         let number = self.get_number();
-        if cfg!(feature = "libcod-compat") {
+        if cfg!(feature = "libtcod-compat") {
             number as f32 * RAND_DIV
         } else {
             // Here we're using the fact that a 32-bit float has a 23-bit mantissa (< 0x1000000),
@@ -251,7 +251,7 @@ impl Algorithm for ComplementaryMultiplyWithCarry {
     #[allow(clippy::unnecessary_cast)]
     fn get_double(&mut self) -> f64 {
         let number = self.get_number();
-        if cfg!(feature = "libcod-compat") {
+        if cfg!(feature = "libtcod-compat") {
             f64::from(number) * RAND_DIV_DOUBLE
         } else {
             // Since we're using 32-bit integers, we can't quite create the 52-bit randomness that

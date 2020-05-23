@@ -34,7 +34,7 @@
 //! Pseudorandom number generator using the Mersenne Twister or Complementary Multiply With Carry
 //! algorithms.
 //!
-//! This module used to be named `mersenne` in libtcod.
+//! This toolkit used to be named `mersenne` in libtcod.
 
 mod algorithms;
 
@@ -529,13 +529,12 @@ impl<A: Algorithm> rand_core::RngCore for Random<A> {
     }
 
     fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), rand_core::Error> {
-        self.fill_bytes(dest);
-        Ok(())
+        Ok(self.fill_bytes(dest))
     }
 }
 
 #[cfg(feature = "rng_support")]
-impl rand::SeedableRng for Random<MersenneTwister> {
+impl rand_core::SeedableRng for Random<MersenneTwister> {
     type Seed = [u8; 4];
 
     fn from_seed(seed: Self::Seed) -> Self {
@@ -548,7 +547,7 @@ impl rand::SeedableRng for Random<MersenneTwister> {
 }
 
 #[cfg(feature = "rng_support")]
-impl rand::SeedableRng for Random<ComplementaryMultiplyWithCarry> {
+impl rand_core::SeedableRng for Random<ComplementaryMultiplyWithCarry> {
     type Seed = [u8; 4];
 
     fn from_seed(seed: Self::Seed) -> Self {

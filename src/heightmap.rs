@@ -44,6 +44,10 @@ use std::ops::{self, AddAssign, MulAssign};
 
 /// A struct representing a height map.
 #[derive(Clone, Debug)]
+#[cfg_attr(
+    feature = "serialization",
+    derive(serde_derive::Serialize, serde_derive::Deserialize)
+)]
 pub struct HeightMap {
     width: usize,
     height: usize,

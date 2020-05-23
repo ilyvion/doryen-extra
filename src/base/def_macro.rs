@@ -44,7 +44,7 @@ macro_rules! define_two_property_arithmetic_struct {
         #[doc = "` values."]
         #[derive(Copy, Clone, Default, PartialEq, Eq)]
         #[derive(Debug)]
-        #[cfg_attr(feature = "serialization", derive(serde_derive::Serialize, serde_derive::Deserialize))]
+        #[cfg_attr(feature = "serialization", derive(::serde_derive::Serialize, ::serde_derive::Deserialize))]
         pub struct $name {
             /// The `
             #[doc = $field1_str]
@@ -274,7 +274,7 @@ macro_rules! define_two_property_arithmetic_struct {
         #[doc = "` values."]
         #[derive(Copy, Clone, Default, PartialEq, Eq)]
         #[derive(Debug)]
-        #[cfg_attr(feature = "serialization", derive(serde_derive::Serialize, serde_derive::Deserialize))]
+        #[cfg_attr(feature = "serialization", derive(::serde_derive::Serialize, ::serde_derive::Deserialize))]
         pub struct $uname {
             /// The `
             #[doc = $field1_str]
@@ -493,7 +493,7 @@ macro_rules! define_two_property_arithmetic_struct {
         #[doc = "` values."]
         #[derive(Copy, Clone, Default, PartialEq)]
         #[derive(Debug)]
-        #[cfg_attr(feature = "serialization", derive(serde_derive::Serialize, serde_derive::Deserialize))]
+        #[cfg_attr(feature = "serialization", derive(::serde_derive::Serialize, ::serde_derive::Deserialize))]
         pub struct $fname {
             /// The `
             #[doc = $field1_str]

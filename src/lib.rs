@@ -123,7 +123,9 @@ mod util;
 mod base;
 pub use base::*;
 
+#[cfg(feature = "doryen")]
 pub mod extenders;
+#[cfg(feature = "doryen")]
 pub mod extensions;
 
 pub mod bresenham;

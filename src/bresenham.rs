@@ -38,6 +38,10 @@ use std::cmp::Ordering;
 
 /// A struct used for computing a bresenham line.
 #[derive(Debug, Copy, Clone)]
+#[cfg_attr(
+    feature = "serialization",
+    derive(serde_derive::Serialize, serde_derive::Deserialize)
+)]
 pub struct Bresenham {
     step_x: i32,
     step_y: i32,
@@ -134,7 +138,7 @@ mod tests {
     use crate::bresenham::Bresenham;
 
     #[test]
-    pub fn calculate_straight_x_line() {
+    fn calculate_straight_x_line() {
         let sut = Bresenham::init(Position::ORIGIN, Position::new(10, 0));
         for (i, Position { x, y }) in sut.enumerate() {
             assert_eq!(i as i32 + 1, x);
@@ -143,7 +147,7 @@ mod tests {
     }
 
     #[test]
-    pub fn calculate_straight_y_line() {
+    fn calculate_straight_y_line() {
         let sut = Bresenham::init(Position::ORIGIN, Position::new(0, 10));
         for (i, Position { x, y }) in sut.enumerate() {
             assert_eq!(0, x);
@@ -152,7 +156,7 @@ mod tests {
     }
 
     #[test]
-    pub fn calculate_diagonal_line() {
+    fn calculate_diagonal_line() {
         let sut = Bresenham::init(Position::ORIGIN, Position::new(10, 10));
         for (i, Position { x, y }) in sut.enumerate() {
             assert_eq!(i as i32 + 1, x);
@@ -161,7 +165,7 @@ mod tests {
     }
 
     #[test]
-    pub fn calculate_staggered_diagonal_line() {
+    fn calculate_staggered_diagonal_line() {
         let sut = Bresenham::init(Position::ORIGIN, Position::new(20, 10));
         for (i, Position { x, y }) in sut.enumerate() {
             assert_eq!(i as i32 + 1, x);
