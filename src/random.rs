@@ -528,6 +528,7 @@ impl<A: Algorithm> rand_core::RngCore for Random<A> {
         impls::fill_bytes_via_next(self, dest)
     }
 
+    #[allow(clippy::unit_arg)] // Recommended by documentation
     fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), rand_core::Error> {
         Ok(self.fill_bytes(dest))
     }
@@ -538,10 +539,10 @@ impl rand_core::SeedableRng for Random<MersenneTwister> {
     type Seed = [u8; 4];
 
     fn from_seed(seed: Self::Seed) -> Self {
-        let seed = (seed[0] as u32) << 24
-            | (seed[1] as u32) << 16
-            | (seed[2] as u32) << 8
-            | (seed[3] as u32);
+        let seed = u32::from(seed[0]) << 24
+            | u32::from(seed[1]) << 16
+            | u32::from(seed[2]) << 8
+            | u32::from(seed[3]);
         Self::new_mt_from_seed(seed)
     }
 }
@@ -551,10 +552,10 @@ impl rand_core::SeedableRng for Random<ComplementaryMultiplyWithCarry> {
     type Seed = [u8; 4];
 
     fn from_seed(seed: Self::Seed) -> Self {
-        let seed = (seed[0] as u32) << 24
-            | (seed[1] as u32) << 16
-            | (seed[2] as u32) << 8
-            | (seed[3] as u32);
+        let seed = u32::from(seed[0]) << 24
+            | u32::from(seed[1]) << 16
+            | u32::from(seed[2]) << 8
+            | u32::from(seed[3]);
         Self::new_cmwc_from_seed(seed)
     }
 }
