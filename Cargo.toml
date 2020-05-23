@@ -1,8 +1,14 @@
 [package]
 name = "doryen-extra"
-version = "0.2.0"
+version = "0.1.0"
 authors = ["Alexander Krivács Schrøder <alexschrod@gmail.com>", "Jice and the libtcod contributors"]
 edition = "2018"
+description = "Doryen-extra aims to be a loose re-implementation of the utility features from the popular roguelike library named libtcod"
+keywords = ["roguelike", "gamedev", "libtcod"]
+repository = "https://github.com/alexschrod/doryen-extra"
+readme = "README.md"
+license = "BSD-3-Clause"
+categories = ["algorithms", "data-structures", "game-development"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
