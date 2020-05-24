@@ -132,7 +132,7 @@ impl HeightMap {
     ///
     /// If the position is outside the range of the height map.
     pub fn interpolated_value(&self, position: FPosition) -> f32 {
-        let i_position = position.truncate_u();
+        let i_position = position.trunc_u();
         if i_position.x as usize >= self.width - 1 || i_position.y as usize >= self.height - 1 {
             self.value(i_position)
         } else {
