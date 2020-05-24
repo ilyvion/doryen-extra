@@ -39,29 +39,6 @@ mod def_macro;
 define_two_property_arithmetic_struct!(Position, UPosition, FPosition, x, y, ORIGIN, "({}, {})");
 define_two_property_arithmetic_struct!(Size, USize, FSize, width, height, ZERO, "{}x{}");
 
-impl FPosition {
-    /// Returns a non-floating point position where the decimal parts of the width and height
-    /// have been rounded.
-    pub fn round(self) -> Position {
-        Position::new(self.x.round() as i32, self.y.round() as i32)
-    }
-
-    /// Returns a non-floating point position where the decimal parts of the width and height
-    /// have been truncated.
-    pub fn trunc(self) -> Position {
-        Position::new(self.x.trunc() as i32, self.y.trunc() as i32)
-    }
-
-    /// Returns a non-floating point position where the decimal parts of the width and height
-    /// have been truncated.
-    pub fn trunc_u(self) -> UPosition {
-        assert!(self.x >= 0.);
-        assert!(self.y >= 0.);
-
-        UPosition::new(self.x.trunc() as u32, self.y.trunc() as u32)
-    }
-}
-
 impl Size {
     /// Returns the area represented by this size
     pub fn area(self) -> i32 {
@@ -73,17 +50,6 @@ impl USize {
     /// Returns the area represented by this size
     pub fn area(self) -> u32 {
         self.width * self.height
-    }
-}
-
-impl TryFrom<Size> for USize {
-    type Error = TryFromIntError;
-
-    fn try_from(value: Size) -> Result<Self, Self::Error> {
-        Ok(Self::new(
-            TryFrom::try_from(value.width)?,
-            TryFrom::try_from(value.height)?,
-        ))
     }
 }
 
@@ -206,6 +172,9 @@ impl std::ops::Add<FSize> for FPosition {
 mod tests {
     use super::*;
 
+    // It should be sufficient to test only Position, as Size uses the same macro
+    // to create its types.
+
     #[test]
     #[allow(clippy::float_cmp)]
     fn new_sets_values() {
@@ -221,18 +190,7 @@ mod tests {
         assert_eq!(fp.x, 1.);
         assert_eq!(fp.y, -2.);
 
-        let s = Size::new(-1, -2);
-        assert_eq!(s.width, -1);
-        assert_eq!(s.height, -2);
-
         let us = USize::new(1, 2);
-        assert_eq!(us.width, 1);
-        assert_eq!(us.height, 2);
-
-        let fs = FSize::new(1., -2.);
-        assert_eq!(fs.width, 1.);
-        assert_eq!(fs.height, -2.);
-
         let r = Rectangle::new(p, us);
         assert_eq!(r.position, p);
         assert_eq!(r.size, us);
@@ -256,18 +214,6 @@ mod tests {
         let fp: FPosition = From::from((1., -2.));
         assert_eq!(fp.x, 1.);
         assert_eq!(fp.y, -2.);
-
-        let s: Size = From::from((-1, -2));
-        assert_eq!(s.width, -1);
-        assert_eq!(s.height, -2);
-
-        let us: USize = From::from((1, 2));
-        assert_eq!(us.width, 1);
-        assert_eq!(us.height, 2);
-
-        let fs: FSize = From::from((1., -2.));
-        assert_eq!(fs.width, 1.);
-        assert_eq!(fs.height, -2.);
     }
 
     #[test]
@@ -287,21 +233,6 @@ mod tests {
         let (fpx, fpy): (f32, f32) = From::from(fp);
         assert_eq!(fpx, 1.);
         assert_eq!(fpy, -2.);
-
-        let s = Size::new(-1, -2);
-        let (swidth, sheight): (i32, i32) = From::from(s);
-        assert_eq!(swidth, -1);
-        assert_eq!(sheight, -2);
-
-        let us = USize::new(1, 2);
-        let (uswidth, usheight): (u32, u32) = From::from(us);
-        assert_eq!(uswidth, 1);
-        assert_eq!(usheight, 2);
-
-        let fs = FSize::new(1., -2.);
-        let (fswidth, fsheight): (f32, f32) = From::from(fs);
-        assert_eq!(fswidth, 1.);
-        assert_eq!(fsheight, -2.);
     }
 
     #[test]
@@ -339,20 +270,10 @@ mod tests {
         let fp2 = FPosition::new(4.5, 6.0);
         assert_eq!(fp + fp2, FPosition::new(3., 3.));
 
-        let s = Size::new(-1, -2);
-        let s2 = Size::new(3, 4);
-        assert_eq!(s + s2, Size::new(2, 2));
-
         let us = USize::new(1, 2);
-        let us2 = USize::new(3, 4);
-        assert_eq!(us + us2, USize::new(4, 6));
-
-        let fs = FSize::new(-1.5, -3.0);
-        let fs2 = FSize::new(4.5, 6.0);
-        assert_eq!(fs + fs2, FSize::new(3., 3.));
-
         assert_eq!(p + us, Rectangle::new(p, us));
-        assert_eq!(fp + fs2, FRectangle::new(fp, fs2));
+        let fs = FSize::new(4.5, 6.0);
+        assert_eq!(fp + fs, FRectangle::new(fp, fs));
     }
 
     #[test]
@@ -368,18 +289,6 @@ mod tests {
         let fp = FPosition::new(-1.5, -3.0);
         let fp2 = 1.5;
         assert_eq!(fp + fp2, FPosition::new(0., -1.5));
-
-        let s = Size::new(-1, -2);
-        let s2 = 2;
-        assert_eq!(s + s2, Size::new(1, 0));
-
-        let us = USize::new(1, 2);
-        let us2 = 3;
-        assert_eq!(us + us2, USize::new(4, 5));
-
-        let fs = FSize::new(-1.5, -3.0);
-        let fs2 = 1.5;
-        assert_eq!(fs + fs2, FSize::new(0., -1.5));
     }
 
     #[test]
@@ -395,18 +304,6 @@ mod tests {
         let fp = FPosition::new(-1.5, -3.0);
         let fp2 = (4.5, 6.0);
         assert_eq!(fp + fp2, FPosition::new(3., 3.));
-
-        let s = Size::new(-1, -2);
-        let s2 = (3, 4);
-        assert_eq!(s + s2, Size::new(2, 2));
-
-        let us = USize::new(1, 2);
-        let us2 = (3, 4);
-        assert_eq!(us + us2, USize::new(4, 6));
-
-        let fs = FSize::new(-1.5, -3.0);
-        let fs2 = (4.5, 6.0);
-        assert_eq!(fs + fs2, FSize::new(3., 3.));
     }
 
     #[test]
@@ -422,18 +319,6 @@ mod tests {
         let mut fp = FPosition::new(-1.5, -3.0);
         fp += 1.5;
         assert_eq!(fp, FPosition::new(0., -1.5));
-
-        let mut s = Size::new(-1, -2);
-        s += 2;
-        assert_eq!(s, Size::new(1, 0));
-
-        let mut us = USize::new(1, 2);
-        us += 3;
-        assert_eq!(us, USize::new(4, 5));
-
-        let mut fs = FSize::new(-1.5, -3.0);
-        fs += 1.5;
-        assert_eq!(fs, FSize::new(0., -1.5));
     }
 
     #[test]
@@ -449,18 +334,6 @@ mod tests {
         let mut fp = FPosition::new(-1.5, -3.0);
         fp += (4.5, 6.0);
         assert_eq!(fp, FPosition::new(3., 3.));
-
-        let mut s = Size::new(-1, -2);
-        s += (3, 4);
-        assert_eq!(s, Size::new(2, 2));
-
-        let mut us = USize::new(1, 2);
-        us += (3, 4);
-        assert_eq!(us, USize::new(4, 6));
-
-        let mut fs = FSize::new(-1.5, -3.0);
-        fs += (4.5, 6.0);
-        assert_eq!(fs, FSize::new(3., 3.));
     }
 
     #[test]
@@ -476,45 +349,21 @@ mod tests {
         let fp = FPosition::new(-1.5, -3.0);
         let fp2 = FPosition::new(4.5, 6.0);
         assert_eq!(fp - fp2, FPosition::new(-6., -9.));
-
-        let s = Size::new(-1, -2);
-        let s2 = Size::new(3, 4);
-        assert_eq!(s - s2, Size::new(-4, -6));
-
-        let us = USize::new(3, 4);
-        let us2 = USize::new(1, 2);
-        assert_eq!(us - us2, USize::new(2, 2));
-
-        let fs = FSize::new(-1.5, -3.0);
-        let fs2 = FSize::new(4.5, 6.0);
-        assert_eq!(fs - fs2, FSize::new(-6., -9.));
     }
 
     #[test]
     fn subtraction_scalar() {
-        let mut p = Position::new(-1, -2);
-        p -= 2;
-        assert_eq!(p, Position::new(-3, -4));
+        let p = Position::new(-1, -2);
+        let p2 = 2;
+        assert_eq!(p - p2, Position::new(-3, -4));
 
-        let mut up = UPosition::new(1, 2);
-        up -= 1;
-        assert_eq!(up, UPosition::new(0, 1));
+        let up = UPosition::new(1, 2);
+        let up2 = 1;
+        assert_eq!(up - up2, UPosition::new(0, 1));
 
-        let mut fp = FPosition::new(-1.5, -3.0);
-        fp -= 1.5;
-        assert_eq!(fp, FPosition::new(-3., -4.5));
-
-        let mut s = Size::new(-1, -2);
-        s -= 2;
-        assert_eq!(s, Size::new(-3, -4));
-
-        let mut us = USize::new(1, 2);
-        us -= 1;
-        assert_eq!(us, USize::new(0, 1));
-
-        let mut fs = FSize::new(-1.5, -3.0);
-        fs -= 1.5;
-        assert_eq!(fs, FSize::new(-3., -4.5));
+        let fp = FPosition::new(-1.5, -3.0);
+        let fp2 = 1.5;
+        assert_eq!(fp - fp2, FPosition::new(-3., -4.5));
     }
 
     #[test]
@@ -530,18 +379,6 @@ mod tests {
         let fp = FPosition::new(-1.5, -3.0);
         let fp2 = (4.5, 6.0);
         assert_eq!(fp - fp2, FPosition::new(-6., -9.));
-
-        let s = Size::new(-1, -2);
-        let s2 = (3, 4);
-        assert_eq!(s - s2, Size::new(-4, -6));
-
-        let us = USize::new(3, 4);
-        let us2 = (1, 2);
-        assert_eq!(us - us2, USize::new(2, 2));
-
-        let fs = FSize::new(-1.5, -3.0);
-        let fs2 = (4.5, 6.0);
-        assert_eq!(fs - fs2, FSize::new(-6., -9.));
     }
 
     #[test]
@@ -557,18 +394,6 @@ mod tests {
         let mut fp = FPosition::new(-1.5, -3.0);
         fp -= 1.5;
         assert_eq!(fp, FPosition::new(-3.0, -4.5));
-
-        let mut s = Size::new(-1, -2);
-        s -= 2;
-        assert_eq!(s, Size::new(-3, -4));
-
-        let mut us = USize::new(6, 3);
-        us -= 3;
-        assert_eq!(us, USize::new(3, 0));
-
-        let mut fs = FSize::new(-1.5, -3.0);
-        fs -= 1.5;
-        assert_eq!(fs, FSize::new(-3., -4.5));
     }
 
     #[test]
@@ -584,18 +409,6 @@ mod tests {
         let mut fp = FPosition::new(-1.5, -3.0);
         fp -= (4.5, 6.0);
         assert_eq!(fp, FPosition::new(-6., -9.));
-
-        let mut s = Size::new(-1, -2);
-        s -= (3, 4);
-        assert_eq!(s, Size::new(-4, -6));
-
-        let mut us = USize::new(3, 4);
-        us -= (1, 2);
-        assert_eq!(us, USize::new(2, 2));
-
-        let mut fs = FSize::new(-1.5, -3.0);
-        fs -= (4.5, 6.0);
-        assert_eq!(fs, FSize::new(-6., -9.));
     }
 
     #[test]
@@ -611,18 +424,6 @@ mod tests {
         let fp = FPosition::new(-1.5, -3.0);
         let fp2 = 1.5;
         assert_eq!(fp * fp2, FPosition::new(-2.25, -4.5));
-
-        let s = Size::new(-1, -2);
-        let s2 = 2;
-        assert_eq!(s * s2, Size::new(-2, -4));
-
-        let us = USize::new(1, 2);
-        let us2 = 3;
-        assert_eq!(us * us2, USize::new(3, 6));
-
-        let fs = FSize::new(-1.5, -3.0);
-        let fs2 = 1.5;
-        assert_eq!(fs * fs2, FSize::new(-2.25, -4.5));
     }
 
     #[test]
@@ -638,18 +439,6 @@ mod tests {
         let mut fp = FPosition::new(-1.5, -3.0);
         fp *= 1.5;
         assert_eq!(fp, FPosition::new(-2.25, -4.5));
-
-        let mut s = Size::new(-1, -2);
-        s *= 2;
-        assert_eq!(s, Size::new(-2, -4));
-
-        let mut us = USize::new(6, 3);
-        us *= 3;
-        assert_eq!(us, USize::new(18, 9));
-
-        let mut fs = FSize::new(-1.5, -3.0);
-        fs *= 1.5;
-        assert_eq!(fs, FSize::new(-2.25, -4.5));
     }
 
     #[test]
@@ -665,18 +454,6 @@ mod tests {
         let fp = FPosition::new(-1.5, -3.0);
         let fp2 = 1.5;
         assert_eq!(fp / fp2, FPosition::new(-1., -2.));
-
-        let s = Size::new(-2, -4);
-        let s2 = 2;
-        assert_eq!(s / s2, Size::new(-1, -2));
-
-        let us = USize::new(18, 9);
-        let us2 = 3;
-        assert_eq!(us / us2, USize::new(6, 3));
-
-        let fs = FSize::new(-1.5, -3.0);
-        let fs2 = 1.5;
-        assert_eq!(fs / fs2, FSize::new(-1., -2.));
     }
 
     #[test]
@@ -692,18 +469,6 @@ mod tests {
         let mut fp = FPosition::new(-1.5, -3.0);
         fp /= 1.5;
         assert_eq!(fp, FPosition::new(-1., -2.));
-
-        let mut s = Size::new(-2, -4);
-        s /= 2;
-        assert_eq!(s, Size::new(-1, -2));
-
-        let mut us = USize::new(6, 3);
-        us /= 3;
-        assert_eq!(us, USize::new(2, 1));
-
-        let mut fs = FSize::new(-1.5, -3.0);
-        fs /= 1.5;
-        assert_eq!(fs, FSize::new(-1., -2.));
     }
 
     #[test]
@@ -713,24 +478,12 @@ mod tests {
         assert_eq!(p % p2, Position::new(-1, -2));
 
         let up = UPosition::new(18, 9);
-        let up2 = 4;
+        let up2 = 4u32;
         assert_eq!(up % up2, UPosition::new(2, 1));
 
         let fp = FPosition::new(-2., -4.);
         let fp2 = 1.5;
         assert_eq!(fp % fp2, FPosition::new(-0.5, -1.));
-
-        let s = Size::new(-2, -4);
-        let s2 = 2;
-        assert_eq!(s % s2, Size::new(0, 0));
-
-        let us = USize::new(18, 9);
-        let us2 = 5;
-        assert_eq!(us % us2, USize::new(3, 4));
-
-        let fs = FSize::new(-5., -7.);
-        let fs2 = 1.5;
-        assert_eq!(fs % fs2, FSize::new(-0.5, -1.));
     }
 
     #[test]
@@ -740,24 +493,12 @@ mod tests {
         assert_eq!(p, Position::new(-1, -1));
 
         let mut up = UPosition::new(6, 3);
-        up %= 4;
+        up %= 4u32;
         assert_eq!(up, UPosition::new(2, 3));
 
         let mut fp = FPosition::new(-5.5, -7.0);
         fp %= 1.5;
         assert_eq!(fp, FPosition::new(-1., -1.));
-
-        let mut s = Size::new(-2, -4);
-        s %= 2;
-        assert_eq!(s, Size::new(0, 0));
-
-        let mut us = USize::new(16, 13);
-        us %= 7;
-        assert_eq!(us, USize::new(2, 6));
-
-        let mut fs = FSize::new(-3.5, -3.0);
-        fs %= 1.5;
-        assert_eq!(fs, FSize::new(-0.5, -0.));
     }
 
     #[test]
@@ -767,30 +508,31 @@ mod tests {
 
         let fp = FPosition::new(-2., -4.);
         assert_eq!(-fp, FPosition::new(2., 4.));
-
-        let s = Size::new(-2, -4);
-        assert_eq!(-s, Size::new(2, 4));
-
-        let fs = FSize::new(-5., -7.);
-        assert_eq!(-fs, FSize::new(5., 7.));
     }
 
     #[test]
     fn round() {
         let fp = FPosition::new(-2.5, 2.5);
         assert_eq!(fp.round(), Position::new(-3, 3));
+
+        let ufp = FPosition::new(2.5, 2.5);
+        assert_eq!(ufp.round_u(), UPosition::new(3, 3));
+    }
+
+    #[test]
+    #[should_panic]
+    fn round_u_less_than_zero_panics() {
+        let fp = FPosition::new(-3.5, 2.5);
+        fp.round_u();
     }
 
     #[test]
     fn trunc() {
         let fp = FPosition::new(-2.5, 2.5);
         assert_eq!(fp.trunc(), Position::new(-2, 2));
-    }
 
-    #[test]
-    fn trunc_u() {
-        let fp = FPosition::new(3.5, 2.5);
-        assert_eq!(fp.trunc_u(), UPosition::new(3, 2));
+        let ufp = FPosition::new(3.5, 2.5);
+        assert_eq!(ufp.trunc_u(), UPosition::new(3, 2));
     }
 
     #[test]
@@ -842,5 +584,70 @@ mod tests {
                 assert!(!fr.contains_position(FPosition::new(x as f32, y as f32)));
             }
         }
+    }
+
+    #[test]
+    fn from_position_conversions() {
+        use std::convert::TryFrom;
+
+        let p = Position::new(1, 2);
+        let p_up = UPosition::try_from(p);
+        assert!(p_up.is_ok());
+        assert_eq!(p_up.unwrap(), UPosition::new(1, 2));
+
+        let np = Position::new(-1, -2);
+        let np_up = UPosition::try_from(np);
+        assert!(np_up.is_err());
+
+        let p_fp = FPosition::from(p);
+        assert_eq!(p_fp, FPosition::new(1.0, 2.0));
+        let np_fp = FPosition::from(np);
+        assert_eq!(np_fp, FPosition::new(-1.0, -2.0));
+    }
+
+    #[test]
+    fn from_uposition_conversions() {
+        use std::convert::TryFrom;
+
+        let up = UPosition::new(1, 2);
+        let up_p = Position::try_from(up);
+        assert!(up_p.is_ok());
+        assert_eq!(up_p.unwrap(), Position::new(1, 2));
+
+        let bp = UPosition::new(u32::MAX / 2 + 1, u32::MAX);
+        let bp_p = Position::try_from(bp);
+        assert!(bp_p.is_err());
+
+        let up_fp = FPosition::from(up);
+        assert_eq!(up_fp, FPosition::new(1.0, 2.0));
+        let bp_fp = FPosition::from(bp);
+        assert_eq!(
+            bp_fp,
+            FPosition::new((u32::MAX / 2 + 1) as f32, u32::MAX as f32)
+        );
+    }
+
+    #[test]
+    fn from_fposition_conversions() {
+        use std::convert::TryFrom;
+
+        let fp = FPosition::new(1., 2.);
+        let fp_p = Position::try_from(fp);
+        assert!(fp_p.is_ok());
+        assert_eq!(fp_p.unwrap(), Position::new(1, 2));
+
+        let bfp = FPosition::new((u32::MAX / 2 + 1) as f32, u32::MAX as f32);
+        let bfp_p = Position::try_from(bfp);
+        assert!(bfp_p.is_err());
+        assert_eq!(bfp_p.unwrap_err(), TryFromPositionError::FloatToInt);
+
+        let fp_up = UPosition::try_from(fp);
+        assert!(fp_up.is_ok());
+        assert_eq!(fp_up.unwrap(), UPosition::new(1, 2));
+
+        let ebfp = FPosition::new((u64::MAX / 2 + 1) as f32, u64::MAX as f32);
+        let ebfp_up = UPosition::try_from(ebfp);
+        assert!(ebfp_up.is_err());
+        assert_eq!(ebfp_up.unwrap_err(), TryFromPositionError::FloatToInt);
     }
 }

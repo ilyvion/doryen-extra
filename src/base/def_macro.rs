@@ -42,8 +42,7 @@ macro_rules! define_two_property_arithmetic_struct {
         #[doc = "` and `"]
         #[doc = $field2_str]
         #[doc = "` values."]
-        #[derive(Copy, Clone, Default, PartialEq, Eq)]
-        #[derive(Debug)]
+        #[derive(Copy, Clone, Default, PartialEq, Eq, Debug)]
         #[cfg_attr(feature = "serialization", derive(::serde_derive::Serialize, ::serde_derive::Deserialize))]
         pub struct $name {
             /// The `
@@ -272,8 +271,7 @@ macro_rules! define_two_property_arithmetic_struct {
         #[doc = "` and `"]
         #[doc = $field2_str]
         #[doc = "` values."]
-        #[derive(Copy, Clone, Default, PartialEq, Eq)]
-        #[derive(Debug)]
+        #[derive(Copy, Clone, Default, PartialEq, Eq, Debug)]
         #[cfg_attr(feature = "serialization", derive(::serde_derive::Serialize, ::serde_derive::Deserialize))]
         pub struct $uname {
             /// The `
@@ -491,8 +489,7 @@ macro_rules! define_two_property_arithmetic_struct {
         #[doc = "` and `"]
         #[doc = $field2_str]
         #[doc = "` values."]
-        #[derive(Copy, Clone, Default, PartialEq)]
-        #[derive(Debug)]
+        #[derive(Copy, Clone, Default, PartialEq, Debug)]
         #[cfg_attr(feature = "serialization", derive(::serde_derive::Serialize, ::serde_derive::Deserialize))]
         pub struct $fname {
             /// The `
@@ -709,6 +706,170 @@ macro_rules! define_two_property_arithmetic_struct {
                     $field1: -self.$field1,
                     $field2: -self.$field2,
                 }
+            }
+        }
+
+        // Conversions
+
+        paste::item! {
+            /// The error type returned when a checked
+            //#[doc = $name_str]
+            /// type conversion fails.
+            #[derive(Debug, Copy, Clone, Eq, PartialEq)]
+            pub enum [< TryFrom $name Error >] {
+                /// The error type returned when a checked integral type conversion fails.
+                TryFromIntError(TryFromIntError),
+                /// The error type returned when a floating point value is outside the range
+                /// of the integer type it needs to be converted to.
+                FloatToInt,
+            }
+            impl From<TryFromIntError> for [< TryFrom $name Error >] {
+                fn from(e: TryFromIntError) -> Self {
+                    Self::TryFromIntError(e)
+                }
+            }
+        }
+
+        paste::item! {
+            impl TryFrom<$name> for $uname {
+                type Error = [< TryFrom $name Error >];
+
+                fn try_from(value: $name) -> Result<Self, Self::Error> {
+                    Ok(Self::new(
+                        TryFrom::try_from(value.$field1)?,
+                        TryFrom::try_from(value.$field2)?,
+                    ))
+                }
+            }
+        }
+
+        impl From<$name> for $fname {
+            fn from(value: $name) -> Self {
+                Self::new(value.$field1 as f32, value.$field2 as f32)
+            }
+        }
+
+        paste::item! {
+            impl TryFrom<$uname> for $name {
+                type Error = [< TryFrom $name Error >];
+
+                fn try_from(value: $uname) -> Result<Self, Self::Error> {
+                    Ok(Self::new(
+                        TryFrom::try_from(value.$field1)?,
+                        TryFrom::try_from(value.$field2)?,
+                    ))
+                }
+            }
+        }
+
+        impl From<$uname> for $fname {
+            fn from(value: $uname) -> Self {
+                let x = value.$field1 as f32;
+                let y = value.$field2 as f32;
+                Self::new(x, y)
+            }
+        }
+
+        paste::item! {
+            impl TryFrom<$fname> for $name {
+                type Error = [< TryFrom $name Error >];
+
+                fn try_from(value: $fname) -> Result<Self, Self::Error> {
+                    if value.$field1 > i32::MAX as f32
+                        || value.$field1 < i32::MIN as f32
+                        || value.$field2 > i32::MAX as f32
+                        || value.$field2 < i32::MIN as f32
+                    {
+                        return Err([< TryFrom $name Error >]::FloatToInt);
+                    }
+                    Ok(Self::new(value.$field1 as i32, value.$field2 as i32))
+                }
+            }
+        }
+
+        paste::item! {
+            impl TryFrom<$fname> for $uname {
+                type Error = [< TryFrom $name Error >];
+
+                fn try_from(value: $fname) -> Result<Self, Self::Error> {
+                    if value.$field1 > u32::MAX as f32
+                        || value.$field1 < u32::MIN as f32
+                        || value.$field2 > u32::MAX as f32
+                        || value.$field2 < u32::MIN as f32
+                    {
+                        return Err([< TryFrom $name Error >]::FloatToInt);
+                    }
+                    Ok(Self::new(value.$field1 as u32, value.$field2 as u32))
+                }
+            }
+        }
+
+        // Special case impls
+
+        impl $fname {
+            /// Returns a non-floating point `
+            #[doc = $name_str]
+            /// ` where the decimal parts of the `
+            #[doc = $field1_str]
+            /// ` and `
+            #[doc = $field2_str]
+            /// ` have been rounded.
+            pub fn round(self) -> $name {
+                $name::new(self.$field1.round() as i32, self.$field2.round() as i32)
+            }
+            /// Returns a non-floating point `
+            #[doc = $name_str]
+            /// ` where the decimal parts of the `
+            #[doc = $field1_str]
+            /// ` and `
+            #[doc = $field2_str]
+            /// ` have been rounded.
+            ///
+            /// # Panics
+            ///
+            /// If the `
+            #[doc = $field1_str]
+            /// ` or the `
+            #[doc = $field2_str]
+            /// ` is < 0.
+            pub fn round_u(self) -> $uname {
+                assert!(self.$field1 >= 0.);
+                assert!(self.$field2 >= 0.);
+
+                $uname::new(self.$field1.round() as u32, self.$field2.round() as u32)
+            }
+
+            /// Returns a non-floating point `
+            #[doc = $name_str]
+            /// ` where the decimal parts of the `
+            #[doc = $field1_str]
+            /// ` and `
+            #[doc = $field2_str]
+            /// ` have been truncated.
+            pub fn trunc(self) -> $name {
+                $name::new(self.$field1.trunc() as i32, self.$field2.trunc() as i32)
+            }
+
+            /// Returns a non-floating point `
+            #[doc = $name_str]
+            /// ` where the decimal parts of the `
+            #[doc = $field1_str]
+            /// ` and `
+            #[doc = $field2_str]
+            /// ` have been truncated.
+            ///
+            /// # Panics
+            ///
+            /// If the `
+            #[doc = $field1_str]
+            /// ` or the `
+            #[doc = $field2_str]
+            /// ` is < 0.
+            pub fn trunc_u(self) -> $uname {
+                assert!(self.$field1 >= 0.);
+                assert!(self.$field2 >= 0.);
+
+                $uname::new(self.$field1.trunc() as u32, self.$field2.trunc() as u32)
             }
         }
     };
