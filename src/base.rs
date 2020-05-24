@@ -478,7 +478,7 @@ mod tests {
         assert_eq!(p % p2, Position::new(-1, -2));
 
         let up = UPosition::new(18, 9);
-        let up2 = 4u32;
+        let up2 = 4_u32;
         assert_eq!(up % up2, UPosition::new(2, 1));
 
         let fp = FPosition::new(-2., -4.);
@@ -493,7 +493,7 @@ mod tests {
         assert_eq!(p, Position::new(-1, -1));
 
         let mut up = UPosition::new(6, 3);
-        up %= 4u32;
+        up %= 4_u32;
         assert_eq!(up, UPosition::new(2, 3));
 
         let mut fp = FPosition::new(-5.5, -7.0);

@@ -186,6 +186,8 @@ impl Color {
     /// * `hue` - The color's hue in degrees.
     /// * `saturation` - The color's saturation, from 0 to 1.
     /// * `value` - The color's value, from 0 to 1.
+    ///
+    /// Values outside the given ranges are clipped to fit within the allowed range.
     #[allow(clippy::many_single_char_names)]
     pub fn set_hsv(&mut self, hue: f32, saturation: f32, value: f32) {
         let saturation = saturation.max(0.0).min(1.0);
@@ -235,7 +237,34 @@ impl Color {
     /// Change a color's hue.
     ///
     /// # Parameters
-    /// * `hue` - The color's hue in degrees.
+    /// * `hue` - The color's hue in degrees. Values outside the
+    /// given range loop around to fit within the allowed range.
+    ///
+    /// # Examples
+    /// ```rust
+    /// # use doryen_extra::color::Color;
+    /// # let mut color = Color::CELADON;
+    /// // Sets the hue of the color to 16 degrees.
+    /// color.set_hue(16.);
+    /// # assert!((color.get_hue() - 16.).abs() < 1.);
+    /// ```
+    ///
+    /// ```rust
+    /// # use doryen_extra::color::Color;
+    /// # let mut color = Color::CELADON;
+    /// // Values outside the range of 0-360 will be clipped:
+    /// color.set_hue(420.);
+    ///
+    /// // The hue is actually set to 60 degrees.
+    /// let hue = color.get_hue();
+    /// assert!((hue - 60.).abs() < 1.);
+    ///
+    /// color.set_hue(-90.);
+    ///
+    /// // The hue is actually set to 270 degrees.
+    /// let hue = color.get_hue();
+    /// assert!((hue - 270.).abs() < 1.);
+    /// ```
     pub fn set_hue(&mut self, hue: f32) {
         let saturation = self.get_saturation();
         let value = self.get_value();
@@ -243,7 +272,9 @@ impl Color {
         self.set_hsv(hue, saturation, value);
     }
 
-    /// Return a color's hue in degrees.
+    /// Return a color's hue in degrees. See [`set_hue`] for examples.
+    ///
+    /// [`set_hue`]: #method.set_hue
     pub fn get_hue(self) -> f32 {
         let max = self.r.max(self.g).max(self.b);
         let min = self.r.min(self.g).min(self.b);
@@ -263,7 +294,9 @@ impl Color {
         hue.floor_modulo(360.0)
     }
 
-    /// Returns a color's saturation in the range \[0, 1\].
+    /// Returns a color's saturation in the range \[0, 1\]. See [`set_saturation`] for examples.
+    ///
+    /// [`set_saturation`]: #method.set_saturation
     pub fn get_saturation(self) -> f32 {
         let max = self.r.max(self.g).max(self.b);
         let min = self.r.min(self.g).min(self.b);
@@ -278,7 +311,34 @@ impl Color {
     /// Change a color's saturation.
     ///
     /// # Parameters
-    /// * `saturation` - The color's saturation, from 0 to 1.
+    /// * `saturation` - The color's saturation, from 0 to 1. Values outside the
+    /// given range are clipped to fit within the allowed range.
+    ///
+    /// # Examples
+    /// ```rust
+    /// # use doryen_extra::color::Color;
+    /// # let mut color = Color::CELADON;
+    /// // Sets the saturation of the color to 0.75.
+    /// color.set_saturation(0.75);
+    /// # assert!((color.get_saturation() - 0.75).abs() < 0.001);
+    /// ```
+    ///
+    /// ```rust
+    /// # use doryen_extra::color::Color;
+    /// # let mut color = Color::CELADON;
+    /// // Values outside the range of 0-1 will be clipped:
+    /// color.set_saturation(2.);
+    ///
+    /// // The saturation is actually set to 1.
+    /// let saturation = color.get_saturation();
+    /// assert!((saturation - 1.).abs() < 0.001);
+    ///
+    /// color.set_saturation(-2.);
+    ///
+    /// // The saturation is actually set to 1.
+    /// let saturation = color.get_saturation();
+    /// assert!((saturation - 0.).abs() < 0.001);
+    /// ```
     pub fn set_saturation(&mut self, saturation: f32) {
         let hue = self.get_hue();
         let value = self.get_value();
@@ -295,6 +355,32 @@ impl Color {
     ///
     /// # Parameters
     /// * `value` - The color's value, from 0 to 1.
+    ///
+    /// # Examples
+    /// ```rust
+    /// # use doryen_extra::color::Color;
+    /// # let mut color = Color::CELADON;
+    /// // Sets the value of the color to 0.25.
+    /// color.set_value(0.25);
+    /// # assert!((color.get_value() - 0.25).abs() < 0.001);
+    /// ```
+    ///
+    /// ```rust
+    /// # use doryen_extra::color::Color;
+    /// # let mut color = Color::CELADON;
+    /// // Values outside the range of 0-1 will be clipped:
+    /// color.set_value(2.);
+    ///
+    /// // The saturation is actually set to 1.
+    /// let value = color.get_value();
+    /// assert!((value - 1.).abs() < 0.001);
+    ///
+    /// color.set_value(-2.);
+    ///
+    /// // The saturation is actually set to 0.
+    /// let value = color.get_value();
+    /// assert!((value - 0.).abs() < 0.001);
+    /// ```
     pub fn set_value(&mut self, value: f32) {
         let hue = self.get_hue();
         let saturation = self.get_saturation();
@@ -306,6 +392,20 @@ impl Color {
     ///
     /// # Parameters
     /// * `hue_shift` - The distance to shift the hue, in degrees.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// # use doryen_extra::color::Color;
+    /// # let mut color = Color::CELADON;
+    /// // Shift the hue by 10 degrees
+    /// color.shift_hue(10.);
+    /// # assert!(color.get_hue() - (Color::CELADON.get_hue() + 10.).abs() < 1.);
+    ///
+    /// // Shift the hue back to what it was originally
+    /// color.shift_hue(-10.);
+    /// # assert!((color.get_hue() - Color::CELADON.get_hue()).abs() < 1.);
+    /// ```
     pub fn shift_hue(&mut self, hue_shift: f32) {
         if hue_shift == 0.0 {
             return;
@@ -322,6 +422,22 @@ impl Color {
     /// # Parameters
     /// * `saturation_coefficient` - Multiplier for this color's saturation.
     /// * `value_coefficient` - Multiplier for this color's value.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// # use doryen_extra::color::Color;
+    ///
+    /// // Let's make a color with a saturation of 0.5 and a value of 0.75
+    /// let mut color = Color::new_hsv(10., 0.5, 0.75);
+    ///
+    /// // Scale them by 1/2 and 1/3, respectively
+    /// color.scale_hsv(0.5, 1. / 3.);
+    ///
+    /// // They should both be 0.25 now
+    /// assert!((color.get_saturation() - 0.25).abs() < 0.001);
+    /// assert!((color.get_value() - 0.25).abs() < 0.001);
+    /// ```
     pub fn scale_hsv(&mut self, saturation_coefficient: f32, value_coefficient: f32) {
         if (saturation_coefficient - 1.0).abs() < 0.001 && (value_coefficient - 1.0).abs() < 0.001 {
             return;
@@ -350,8 +466,33 @@ impl Color {
     /// # Example
     /// ```
     /// # use doryen_extra::color::Color;
+    /// // Generates no colors at all
+    /// let none = Color::generate_gradient_rgb(&[], &[]);
+    ///
+    /// assert!(none.is_empty());
+    /// ```
+    ///
+    /// ```
+    /// # use doryen_extra::color::Color;
+    /// // Generates only the given color
+    /// let one = Color::generate_gradient_rgb(&[Color::WHITE], &[]);
+    ///
+    /// assert_eq!(one.len(), 1);
+    /// assert_eq!(one[0], Color::WHITE);
+    /// ```
+    ///
+    ///
+    /// ```
+    /// # use doryen_extra::color::Color;
     /// // Generates every grayscale color between black and white
-    /// let grayscale = Color::generate_gradient_rgb(&[Color::BLACK,Color::WHITE], &[254]);
+    /// let grayscale = Color::generate_gradient_rgb(&[Color::BLACK, Color::WHITE], &[254]);
+    ///
+    /// assert_eq!(grayscale.len(), 256);
+    /// # for (i, color) in grayscale.iter().enumerate() {
+    /// #     assert_eq!(color.r, i as u8);
+    /// #     assert_eq!(color.g, i as u8);
+    /// #     assert_eq!(color.b, i as u8);
+    /// # }
     /// ```
     pub fn generate_gradient_rgb(key_colors: &[Self], gradient_spans: &[usize]) -> Vec<Self> {
         if key_colors.is_empty() {
@@ -389,11 +530,28 @@ impl Color {
     /// # Panics
     /// * If `gradient_spans`' length isn't one less than `key_colors`' length.
     ///
-    /// # Example
+    /// # Examples
+    /// ```
+    /// # use doryen_extra::color::Color;
+    /// // Generates no colors at all
+    /// let none = Color::generate_gradient_hsv(&[], &[]);
+    ///
+    /// assert!(none.is_empty());
+    /// ```
+    ///
+    /// ```
+    /// # use doryen_extra::color::Color;
+    /// // Generates only the given color
+    /// let one = Color::generate_gradient_hsv(&[Color::WHITE], &[]);
+    ///
+    /// assert_eq!(one.len(), 1);
+    /// assert_eq!(one[0], Color::WHITE);
+    /// ```
+    ///
     /// ```
     /// # use doryen_extra::color::Color;
     /// // Generates every grayscale color between black and white
-    /// let grayscale = Color::generate_gradient_hsv(&[Color::BLACK,Color::WHITE], &[254]);
+    /// let grayscale = Color::generate_gradient_hsv(&[Color::BLACK, Color::WHITE], &[254]);
     /// ```
     pub fn generate_gradient_hsv(key_colors: &[Self], gradient_spans: &[usize]) -> Vec<Self> {
         if key_colors.is_empty() {
@@ -967,10 +1125,10 @@ impl Mul for Color {
     /// Multiply two colors together and return the result.
     fn mul(self, rhs: Self) -> Self::Output {
         Self::new_with_alpha(
-            (i32::from(self.r) * i32::from(rhs.r) / 255) as u8,
-            (i32::from(self.g) * i32::from(rhs.g) / 255) as u8,
-            (i32::from(self.b) * i32::from(rhs.b) / 255) as u8,
-            (i32::from(self.a) * i32::from(rhs.a) / 255) as u8,
+            (f32::from(self.r) * f32::from(rhs.r) / 255.) as u8,
+            (f32::from(self.g) * f32::from(rhs.g) / 255.) as u8,
+            (f32::from(self.b) * f32::from(rhs.b) / 255.) as u8,
+            (f32::from(self.a) * f32::from(rhs.a) / 255.) as u8,
         )
     }
 }
@@ -1135,23 +1293,111 @@ mod tests {
     }
 
     #[test]
-    fn gradient() {
-        let grayscale = Color::generate_gradient_rgb(&[Color::BLACK, Color::WHITE], &[254]);
+    fn operations() {
+        let color1 = Color::new(31, 63, 127);
+        let color2 = Color::new(1, 2, 3);
+        let color3 = Color::new(50, 100, 200);
+        assert_eq!(color1 + color2, Color::new(32, 65, 130));
+        assert_eq!(color1 - color2, Color::new_with_alpha(30, 61, 124, 0));
+        assert_eq!(color1 * color3, Color::new(6, 24, 99));
+        assert_eq!(color2 * 2., Color::new(2, 4, 6));
+    }
 
-        assert_eq!(grayscale.len(), 256);
-        for (i, color) in grayscale.iter().enumerate() {
-            assert_eq!(color.r, i as u8);
-            assert_eq!(color.g, i as u8);
-            assert_eq!(color.b, i as u8);
+    #[test]
+    fn conversions() {
+        assert_eq!(Color::from((1, 2, 3)), Color::new(1, 2, 3));
+        assert_eq!((1, 2, 3), Color::new(1, 2, 3).into());
+        #[cfg(feature = "doryen")]
+        {
+            assert_eq!(Color::from((1, 2, 3, 4)), Color::new_with_alpha(1, 2, 3, 4));
+            assert_eq!((1, 2, 3, 4), Color::new_with_alpha(1, 2, 3, 4).into());
         }
+    }
 
-        let grayscale = Color::generate_gradient_hsv(&[Color::BLACK, Color::WHITE], &[254]);
+    #[test]
+    #[allow(clippy::enum_glob_use)]
+    #[allow(clippy::cognitive_complexity)]
+    fn by_name_and_level() {
+        use crate::color::Level::*;
+        use crate::color::Name::*;
 
-        assert_eq!(grayscale.len(), 256);
-        for (i, color) in grayscale.iter().enumerate() {
-            assert_eq!(color.r, i as u8);
-            assert_eq!(color.g, i as u8);
-            assert_eq!(color.b, i as u8);
+        for &n in &[
+            Red, Flame, Orange, Amber, Yellow, Lime, Chartreuse, Green, Sea, Turquoise, Cyan, Sky,
+            Azure, Blue, Han, Violet, Purple, Fuchsia, Magenta, Pink, Crimson,
+        ] {
+            for &l in &[
+                Desaturated,
+                Lightest,
+                Lighter,
+                Light,
+                Normal,
+                Dark,
+                Darker,
+                Darkest,
+            ] {
+                let color = Color::by_name_and_level(n, l);
+
+                // This is no exact science, clearly, but they all fall within
+                // fairly narrow ranges.
+                match n {
+                    Red => assert!(color.get_hue() < 0.1),
+                    Flame => assert!((color.get_hue() - 15.).abs() < 0.8),
+                    Orange => assert!((color.get_hue() - 30.).abs() < 0.5),
+                    Amber => assert!((color.get_hue() - 45.).abs() < 0.3),
+                    Yellow => assert!((color.get_hue() - 60.).abs() < 0.1),
+                    Lime => assert!((color.get_hue() - 75.).abs() < 0.3),
+                    Chartreuse => assert!((color.get_hue() - 90.).abs() < 0.5),
+                    Green => assert!((color.get_hue() - 120.).abs() < 0.1),
+                    Sea => assert!((color.get_hue() - 150.).abs() < 0.5),
+                    Turquoise => assert!((color.get_hue() - 165.).abs() < 0.3),
+                    Cyan => assert!((color.get_hue() - 180.).abs() < 0.1),
+                    Sky => assert!((color.get_hue() - 195.).abs() < 0.3),
+                    Azure => assert!((color.get_hue() - 210.).abs() < 0.5),
+                    Blue => assert!((color.get_hue() - 240.).abs() < 0.1),
+                    Han => assert!((color.get_hue() - 255.).abs() < 0.8),
+                    Violet => assert!((color.get_hue() - 270.).abs() < 0.5),
+                    Purple => assert!((color.get_hue() - 285.).abs() < 0.3),
+                    Fuchsia => assert!((color.get_hue() - 300.).abs() < 0.1),
+                    Magenta => assert!((color.get_hue() - 315.).abs() < 0.3),
+                    Pink => assert!((color.get_hue() - 330.).abs() < 0.5),
+                    Crimson => assert!((color.get_hue() - 345.).abs() < 0.8),
+                }
+
+                match l {
+                    Desaturated => {
+                        assert!((color.get_saturation() - 0.5).abs() < 0.1);
+                        assert!((color.get_value() - 0.5).abs() < 0.1);
+                    }
+                    Lightest => {
+                        assert!((color.get_saturation() - 0.25).abs() < 0.1);
+                        assert!((color.get_value() - 1.0).abs() < 0.1);
+                    }
+                    Lighter => {
+                        assert!((color.get_saturation() - 0.5).abs() < 0.1);
+                        assert!((color.get_value() - 1.0).abs() < 0.1);
+                    }
+                    Light => {
+                        assert!((color.get_saturation() - 0.75).abs() < 0.1);
+                        assert!((color.get_value() - 1.0).abs() < 0.1);
+                    }
+                    Normal => {
+                        assert!((color.get_saturation() - 1.0).abs() < 0.1);
+                        assert!((color.get_value() - 1.0).abs() < 0.1);
+                    }
+                    Dark => {
+                        assert!((color.get_saturation() - 1.0).abs() < 0.1);
+                        assert!((color.get_value() - 0.75).abs() < 0.1);
+                    }
+                    Darker => {
+                        assert!((color.get_saturation() - 1.0).abs() < 0.1);
+                        assert!((color.get_value() - 0.5).abs() < 0.1);
+                    }
+                    Darkest => {
+                        assert!((color.get_saturation() - 1.0).abs() < 0.1);
+                        assert!((color.get_value() - 0.25).abs() < 0.1);
+                    }
+                }
+            }
         }
     }
 }

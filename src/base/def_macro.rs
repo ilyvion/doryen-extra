@@ -713,7 +713,7 @@ macro_rules! define_two_property_arithmetic_struct {
 
         paste::item! {
             /// The error type returned when a checked
-            //#[doc = $name_str]
+            #[doc = $name_str]
             /// type conversion fails.
             #[derive(Debug, Copy, Clone, Eq, PartialEq)]
             pub enum [< TryFrom $name Error >] {
