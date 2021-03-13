@@ -316,7 +316,7 @@ impl ConsoleExtender<'_> {
         fill: Option<u16>,
         title: Option<S>,
     ) {
-        self.rectangle(rectangle, fore.clone(), back.clone(), fill);
+        self.rectangle(rectangle, fore, back, fill);
 
         if let Some(title) = title {
             let text = format!(" {} ", title.as_ref());
