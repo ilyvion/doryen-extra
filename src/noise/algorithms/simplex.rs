@@ -33,11 +33,12 @@
 
 use crate::noise::algorithms::AlgorithmInitializer;
 use crate::noise::Algorithm;
-use crate::random::Algorithm as RandomAlgorithm;
+use crate::random::algorithms::Algorithm as RandomAlgorithm;
 use crate::util::FloorRem;
 
 use derivative::Derivative;
 
+/// Simplex noise algorithm.
 #[derive(Clone, Copy, Derivative)]
 #[derivative(Debug)]
 pub struct Simplex {

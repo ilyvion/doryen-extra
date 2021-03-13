@@ -33,7 +33,8 @@
 
 use crate::noise::algorithms::AlgorithmInitializer;
 use crate::noise::Algorithm;
-use crate::random::{Algorithm as RandomAlgorithm, Random, Rng};
+use crate::random::algorithms::Algorithm as RandomAlgorithm;
+use crate::random::{Random, Rng};
 use crate::util::FloorRem;
 use derivative::Derivative;
 use std::mem::MaybeUninit;
@@ -48,6 +49,7 @@ const WAVELET_SCALE: f32 = 2.0;
 
 /* wavelet noise, adapted from Robert L. Cook and Tony Derose 'Wavelet noise' paper */
 
+/// Wavelet noise algorithm.
 #[derive(Clone, Derivative)]
 #[derivative(Debug)]
 pub struct Wavelet {

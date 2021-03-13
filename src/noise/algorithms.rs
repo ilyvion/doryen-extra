@@ -31,30 +31,43 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-pub(crate) mod perlin;
-pub(crate) mod simplex;
-pub(crate) mod wavelet;
+//! Noise generator algorithms.
+
+mod perlin;
+mod simplex;
+mod wavelet;
+
+pub use perlin::Perlin;
+pub use simplex::Simplex;
+pub use wavelet::Wavelet;
 
 use crate::noise::MAX_DIMENSIONS;
-use crate::random::{Algorithm as RandomAlgorithm, Random, Rng};
+use crate::random::algorithms::Algorithm as RandomAlgorithm;
+use crate::random::{Random, Rng};
 use ilyvion_util::multi_dimensional::Window2D;
 
+/// Noise algorithm trait.
 pub trait Algorithm {
+    /// Creates a new noise algorithm instance.
     fn new<R: RandomAlgorithm>(dimensions: usize, initializer: AlgorithmInitializer<R>) -> Self;
 
+    /// Generates the noise value at the given coordinates.
     fn generate(&self, f: &[f32]) -> f32;
 }
 
+/// Noise algorithm initializer.
 #[derive(Debug)]
 pub struct AlgorithmInitializer<R: RandomAlgorithm> {
     random: Random<R>,
 }
 
 impl<R: RandomAlgorithm> AlgorithmInitializer<R> {
+    /// Create a new noise algorithm initializer instance.
     pub fn new(random: Random<R>) -> Self {
         Self { random }
     }
 
+    /// Generate a map.
     pub fn map(&mut self) -> [u8; 256] {
         let mut map = [0; 256];
         for i in 0_u8..=255 {
@@ -72,6 +85,7 @@ impl<R: RandomAlgorithm> AlgorithmInitializer<R> {
         map
     }
 
+    /// Generate a buffer.
     pub fn buffer(&mut self, dimensions: usize) -> [f32; MAX_DIMENSIONS * 256] {
         let mut buffer = [0.0; MAX_DIMENSIONS * 256];
         let mut buffer_window = Window2D::new_mut_unchecked(&mut buffer, 256, MAX_DIMENSIONS);

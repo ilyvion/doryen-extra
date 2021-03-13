@@ -50,14 +50,15 @@
 //! The default choice should be Simplex. It's much faster than Perlin, especially in 4 dimensions.
 //! It has a better contrast too.
 
-mod algorithms;
+pub mod algorithms;
 
-use crate::noise::algorithms::perlin::Perlin;
-use crate::noise::algorithms::simplex::Simplex;
-use crate::noise::algorithms::wavelet::Wavelet;
-pub(crate) use crate::noise::algorithms::Algorithm;
+use crate::noise::algorithms::Algorithm;
 use crate::noise::algorithms::AlgorithmInitializer;
-use crate::random::{Algorithm as RandomAlgorithm, Random};
+use crate::noise::algorithms::Perlin;
+use crate::noise::algorithms::Simplex;
+use crate::noise::algorithms::Wavelet;
+use crate::random::algorithms::Algorithm as RandomAlgorithm;
+use crate::random::Random;
 use derivative::Derivative;
 
 /// The maximum number of octaves supported.

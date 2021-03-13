@@ -35,8 +35,10 @@
 //!
 //! This module provides a way to create a 2D grid of float values using various algorithms.
 
-use crate::noise::{Algorithm as NoiseAlgorithm, Noise};
-use crate::random::{Algorithm as RandomAlgorithm, Random, Rng};
+use crate::noise::algorithms::Algorithm as NoiseAlgorithm;
+use crate::noise::Noise;
+use crate::random::algorithms::Algorithm as RandomAlgorithm;
+use crate::random::{Random, Rng};
 use crate::{FPosition, Position, UPosition};
 use ilyvion_util::non_nan::NonNan;
 use impl_ops::*;

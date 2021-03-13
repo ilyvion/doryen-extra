@@ -36,9 +36,9 @@
 //!
 //! This toolkit used to be named `mersenne` in libtcod.
 
-mod algorithms;
+pub mod algorithms;
 
-pub(crate) use crate::random::algorithms::Algorithm;
+use crate::random::algorithms::Algorithm;
 use crate::random::algorithms::{ComplementaryMultiplyWithCarry, MersenneTwister};
 use std::cmp::Ordering;
 use std::time::SystemTime;

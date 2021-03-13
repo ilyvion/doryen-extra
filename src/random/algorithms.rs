@@ -31,18 +31,25 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+//! Random number generator algorithms.
+
 use std::mem::{transmute, MaybeUninit};
 
 const RAND_DIV: f32 = 1.0 / 0xffff_ffff_u32 as f32; // u32::MAX
 #[allow(clippy::unnecessary_cast)]
 const RAND_DIV_DOUBLE: f64 = 1.0 / 0xffff_ffff_u32 as f64; // u32::MAX
 
+/// Random number generator algorithm trait.
 pub trait Algorithm {
+    /// Generate a 32-bit integer.
     fn get_int(&mut self) -> u32;
+    /// Generate a 32-bit floating point number.
     fn get_float(&mut self) -> f32;
+    /// Generate a 64-bit floating point number.
     fn get_double(&mut self) -> f64;
 }
 
+/// Mersenne Twister algorithm.
 #[derive(Clone, Copy)]
 pub struct MersenneTwister {
     mt: [u32; Self::MT19937_RECURRENCE_DEGREE],
@@ -62,6 +69,7 @@ impl MersenneTwister {
     const MT19937_LOWER_MASK: u32 = (1 << (Self::MT19937_SEPARATION_POINT)) as u32;
     const MT19937_UPPER_MASK: u32 = !Self::MT19937_LOWER_MASK;
 
+    /// Create a new Mersenne Twister algorithm instance.
     pub fn new(seed: u32) -> Self {
         Self {
             cur_mt: 624,
@@ -173,6 +181,7 @@ impl Algorithm for MersenneTwister {
     }
 }
 
+/// Complementary-Multiply-With-Carry algorithm.
 #[derive(Clone, Copy)]
 pub struct ComplementaryMultiplyWithCarry {
     q: [u32; 4096],
@@ -181,6 +190,7 @@ pub struct ComplementaryMultiplyWithCarry {
 }
 
 impl ComplementaryMultiplyWithCarry {
+    /// Create a new Complementary-Multiply-With-Carry algorithm instance.
     #[allow(unsafe_code)]
     pub fn new(seed: u32) -> Self {
         let mut s = seed;

@@ -33,10 +33,11 @@
 
 use crate::noise::algorithms::AlgorithmInitializer;
 use crate::noise::{Algorithm, MAX_DIMENSIONS};
-use crate::random::Algorithm as RandomAlgorithm;
+use crate::random::algorithms::Algorithm as RandomAlgorithm;
 use derivative::Derivative;
 use ilyvion_util::multi_dimensional::Window2D;
 
+/// Perlin noise algorithm.
 #[derive(Clone, Copy, Derivative)]
 #[derivative(Debug)]
 pub struct Perlin {
