@@ -1,6 +1,6 @@
 [package]
 name = "doryen-extra"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Alexander Krivács Schrøder <alexschrod@gmail.com>", "Jice and the libtcod contributors"]
 edition = "2018"
 description = "Doryen-extra aims to be a loose re-implementation of the utility features from the popular roguelike library named libtcod"
