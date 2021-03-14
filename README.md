@@ -56,7 +56,7 @@ in your `Cargo.toml` file, which removes the default `doryen` feature.
 
 This feature restores (on a best-effort basis) the functionality of the original
 `libtcod` library, where it has been modified. At the time of writing, the only change that
-will happen is to the float generation of the `ComplementaryMultiplyWithCarry` RNG algorithm.
+will happen is to the floating point number generation of the RNG algorithms.
 
 ## `rng_support`
 
