@@ -43,10 +43,87 @@ const RAND_DIV_DOUBLE: f64 = 1.0 / 0xffff_ffff_u32 as f64; // u32::MAX
 pub trait Algorithm {
     /// Generate a 32-bit integer.
     fn get_int(&mut self) -> u32;
+
     /// Generate a 32-bit floating point number.
-    fn get_float(&mut self) -> f32;
+    fn get_float(&mut self) -> f32 {
+        if cfg!(feature = "libtcod-compat") {
+            self.get_int() as f32 * RAND_DIV
+        } else {
+            // Generate a random 32-bit floating point number between 0 and 1
+            // using the Allen Downey algorithm described here:
+            // <https://allendowney.com/research/rand/downey07randfloat.pdf>
+            //
+            // The desirable properties of this algorithm is that it can produce
+            // every representable floating-point value in a given range
+            // (as opposed to about 7% of them with the "libtcod-compat" method
+            // above) and it produces uniformly distributed values.
+            //
+            // Thanks to <https://github.com/orlp> for the link to the article.
+
+            let low_exp = 0;
+            let high_exp = 127;
+
+            let mut bits = Bits::new(self);
+            let mut exp = high_exp - 1;
+            while exp > low_exp {
+                if bits.get_bit() != 0 {
+                    break;
+                }
+                exp -= 1;
+            }
+
+            let mantissa = bits.algorithm.get_int() & 0x7FFFFF;
+            if mantissa == 0 && bits.get_bit() != 0 {
+                exp += 1;
+            }
+
+            let ans = (exp << 23) | mantissa;
+
+            f32::from_bits(ans)
+        }
+    }
+
     /// Generate a 64-bit floating point number.
-    fn get_double(&mut self) -> f64;
+    fn get_double(&mut self) -> f64 {
+        if cfg!(feature = "libtcod-compat") {
+            f64::from(self.get_int()) * RAND_DIV_DOUBLE
+        } else {
+            // Generate a random 64-bit floating point number between 0 and 1
+            // using the Allen Downey algorithm described here:
+            // <https://allendowney.com/research/rand/downey07randfloat.pdf>
+            //
+            // The desirable properties of this algorithm is that it can produce
+            // every representable floating-point value in a given range
+            // (as opposed to a minuscule amount of them with the
+            // "libtcod-compat" method above) and it produces uniformly
+            // distributed values.
+            //
+            // Thanks to <https://github.com/orlp> for the link to the article.
+
+            let low_exp = 0;
+            let high_exp = 1023;
+
+            let mut bits = Bits::new(self);
+            let mut exp = high_exp - 1;
+            while exp > low_exp {
+                if bits.get_bit() != 0 {
+                    break;
+                }
+                exp -= 1;
+            }
+
+            let mantissa = (u64::from(bits.algorithm.get_int()) << 32
+                | u64::from(bits.algorithm.get_int()))
+                & 0xFFFFFFFFFFFFF;
+            if mantissa == 0 && bits.get_bit() != 0 {
+                exp += 1;
+            }
+
+            let ans = (exp << 52) | mantissa;
+
+            f64::from_bits(ans)
+        }
+    }
 }
 
 /// Mersenne Twister algorithm.
@@ -154,31 +231,6 @@ impl Algorithm for MersenneTwister {
     fn get_int(&mut self) -> u32 {
         Self::mt_rand(&mut self.mt, &mut self.cur_mt)
     }
-
-    fn get_float(&mut self) -> f32 {
-        if cfg!(feature = "libtcod-compat") {
-            Self::mt_rand(&mut self.mt, &mut self.cur_mt) as f32 * RAND_DIV
-        } else {
-            // Here we're using the fact that a 32-bit float has a 23-bit mantissa (< 0x1000000),
-            // which gives us evenly spaced (uniform) values between 0 and 1. I find this uniformity
-            // to be more important than providing every possible 32-bit float value between
-            // 0 and 1, the set of which is heavily biased towards 0.
-            (Self::mt_rand(&mut self.mt, &mut self.cur_mt) % 0x100_0000) as f32 / 0x100_0000 as f32
-        }
-    }
-
-    #[allow(clippy::unnecessary_cast)]
-    fn get_double(&mut self) -> f64 {
-        if cfg!(feature = "libtcod-compat") {
-            f64::from(self.get_float())
-        } else {
-            // Since we're using 32-bit integers, we can't quite create the 52-bit randomness that
-            // it would take to get the full range of possible values between 0 and 1 using an f64's
-            // mantissa, but we can at least use the full 32 bits instead of the 23 we used for the
-            // f32.
-            f64::from(Self::mt_rand(&mut self.mt, &mut self.cur_mt)) / 0x1_0000_0000_u64 as f64
-        }
-    }
 }
 
 /// Complementary-Multiply-With-Carry algorithm.
@@ -244,31 +296,32 @@ impl Algorithm for ComplementaryMultiplyWithCarry {
     fn get_int(&mut self) -> u32 {
         self.get_number()
     }
+}
 
-    fn get_float(&mut self) -> f32 {
-        let number = self.get_number();
-        if cfg!(feature = "libtcod-compat") {
-            number as f32 * RAND_DIV
-        } else {
-            // Here we're using the fact that a 32-bit float has a 23-bit mantissa (< 0x1000000),
-            // which gives us evenly spaced (uniform) values between 0 and 1. I find this uniformity
-            // to be more important than providing every possible 32-bit float value between
-            // 0 and 1, the set of which is heavily biased towards 0.
-            (number % 0x100_0000) as f32 / 0x100_0000 as f32
+struct Bits<'a, A: Algorithm + ?Sized> {
+    algorithm: &'a mut A,
+    bits: u32,
+    bits_left: u32,
+}
+
+impl<'a, A: Algorithm + ?Sized> Bits<'a, A> {
+    fn new(algorithm: &'a mut A) -> Self {
+        Self {
+            algorithm,
+            bits: 0,
+            bits_left: 0,
         }
     }
 
-    #[allow(clippy::unnecessary_cast)]
-    fn get_double(&mut self) -> f64 {
-        let number = self.get_number();
-        if cfg!(feature = "libtcod-compat") {
-            f64::from(number) * RAND_DIV_DOUBLE
-        } else {
-            // Since we're using 32-bit integers, we can't quite create the 52-bit randomness that
-            // it would take to get the full range of possible values between 0 and 1 using an f64's
-            // mantissa, but we can at least use the full 32 bits instead of the 23 we used for the
-            // f32.
-            f64::from(number) / 0x1_0000_0000_u64 as f64
+    fn get_bit(&mut self) -> u32 {
+        if self.bits_left == 0 {
+            self.bits = self.algorithm.get_int();
+            self.bits_left = 32;
         }
+
+        let bit = self.bits & 1;
+        self.bits >>= 1;
+        self.bits_left -= 1;
+        bit
     }
 }
